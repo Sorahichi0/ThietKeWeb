@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giỏ hàng - Camera Pro</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dark: '#111111',
+                        surface: '#1A1A1A',
+                        primary: '#00ea00', // Màu xanh lá neon giống thiết kế
+                        'primary-hover': '#00cc00',
+                        textMain: '#ffffff',
+                        textMuted: '#9ca3af',
+                        borderDark: '#333333'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Tùy chỉnh thanh cuộn */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111111;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333333;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555555;
+        }
+        /* Ẩn mũi tên của input number */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+        input[type=number] {
+            appearance: none;
+            -moz-appearance: textfield;
+        }
+
+        body {
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        body.loaded {
+            opacity: 1;
+        }
+
+        body.fade-out {
+            opacity: 0;
+        }
+    </style>
+</head>
+<body class="bg-dark text-textMain font-sans min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="border-b border-borderDark sticky top-0 bg-dark/95 backdrop-blur-sm z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo Space -->
+                <a href="TrangChu.html" class="flex-shrink-0 flex items-center gap-2 cursor-pointer">
+                    <!-- Vị trí để logo -->
+                    <div class="h-10 flex items-center justify-center">
+                        <!-- Thay link ảnh logo của bạn vào thuộc tính src bên dưới -->
+                        <img src="images/Camera_Pro.png" alt="Logo Camera Pro" class="h-full w-auto object-contain">
+                    </div>
+                    <!-- Đã hiển thị trên mobile và đổi màu chữ Pro -->
+                    <span class="font-bold text-lg">Camera<span class="text-primary">Pro</span></span>
+                </a>
+
+                <!-- Desktop Menu -->
+                <nav class="hidden md:flex space-x-8">
+                    <a href="TrangChu.html" class="text-sm font-medium hover:text-primary transition-colors duration-200">Trang Chủ</a>
+                    <a href="DanhSachSanPham.html" class="text-sm font-medium hover:text-primary transition-colors duration-200">Sản Phẩm</a>
+                    <a href="#" class="text-sm font-medium hover:text-primary transition-colors duration-200">Phụ kiện</a>
+                    <a href="#" class="text-sm font-medium hover:text-primary transition-colors duration-200">Tin Tức</a>
+                    <a href="#" class="text-sm font-medium hover:text-primary transition-colors duration-200">Hỗ Trợ</a>
+                </nav>
+
+                <!-- Search & Icons -->
+                <div class="flex items-center gap-4 sm:gap-6">
+                    <!-- Search Bar -->
+                    <div class="hidden sm:flex relative">
+                        <input type="text" placeholder="Tìm kiếm..." class="bg-surface text-sm text-white rounded-full pl-4 pr-10 py-2 w-48 lg:w-64 focus:outline-none focus:ring-1 focus:ring-primary border border-borderDark transition-all">
+                        <i class="ph ph-magnifying-glass absolute right-3 top-1/2 transform -translate-y-1/2 text-textMuted"></i>
+                    </div>
+
+                    <!-- Cart -->
+                    <a href="GioHang.html" class="relative text-primary hover:text-primary-hover transition-colors">
+                        <i class="ph ph-shopping-cart text-2xl"></i>
+                        <span class="absolute -top-2 -right-2 bg-primary text-dark text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">2</span>
+                    </a>
+
+                    <!-- User -->
+                    <a href="DangNhap.html" class="text-textMain hover:text-primary transition-colors">
+                        <i class="ph ph-user text-2xl"></i>
+                    </a>
+
+                    <!-- Mobile Menu Button (Đã chuyển xuống cuối cùng để kịch phải) -->
+                    <button id="mobile-menu-btn" class="md:hidden text-textMain hover:text-primary transition ml-2">
+                        <i class="ph ph-list text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Menu Dropdown -->
+            <div id="mobile-menu" class="hidden md:hidden absolute top-20 left-0 w-full bg-surface border-b border-borderDark shadow-xl z-40">
+                <nav class="flex flex-col p-4 space-y-2">
+                    <div class="relative w-full mb-4">
+                        <input type="text" placeholder="Tìm kiếm..." class="w-full bg-dark text-sm text-white rounded-full pl-4 pr-10 py-3 focus:outline-none focus:border-primary border border-borderDark transition-all">
+                        <i class="ph ph-magnifying-glass absolute right-4 top-1/2 transform -translate-y-1/2 text-textMuted text-lg"></i>
+                    </div>
+                    <a href="TrangChu.html" class="block text-sm font-medium hover:text-primary transition-colors py-3 border-b border-borderDark/50">Trang Chủ</a>
+                    <a href="DanhSachSanPham.html" class="block text-sm font-medium hover:text-primary transition-colors py-3 border-b border-borderDark/50">Sản Phẩm</a>
+                    <a href="#" class="block text-sm font-medium hover:text-primary transition-colors py-3 border-b border-borderDark/50">Phụ Kiện</a>
+                    <a href="#" class="block text-sm font-medium hover:text-primary transition-colors py-3 border-b border-borderDark/50">Tin Tức</a>
+                    <a href="#" class="block text-sm font-medium hover:text-primary transition-colors py-3">Hỗ Trợ</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+        
+        <!-- Breadcrumb -->
+        <div class="text-xs text-textMuted tracking-wider mb-6 flex items-center gap-2">
+            <a href="#" class="hover:text-primary transition">TRANG CHỦ</a>
+            <i class="ph ph-caret-right text-[10px]"></i>
+            <span class="text-textMain">GIỎ HÀNG</span>
+        </div>
+
+        <h1 class="text-3xl sm:text-4xl font-bold mb-8 sm:mb-12">Giỏ hàng của bạn</h1>
+
+        <div class="flex flex-col lg:flex-row gap-8 lg:gap-12">
+            
+            <!-- Cột trái: Danh sách sản phẩm -->
+            <div class="w-full lg:w-2/3 flex flex-col gap-4" id="cart-items-container">
+                
+                <!-- Product Item 1 -->
+                <div class="bg-surface rounded-xl p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 border border-transparent hover:border-borderDark transition-all group cart-item" data-price="58990000">
+                    <!-- Hình ảnh -->
+                    <div class="w-full sm:w-32 h-32 bg-dark rounded-lg flex items-center justify-center p-2 flex-shrink-0">
+                        <img src="images/may-anh-sony-a7-iv.png" alt="Sony Alpha A7 IV" class="object-contain w-full h-full drop-shadow-lg group-hover:scale-105 transition-transform duration-300">
+                    </div>
+                    
+                    <!-- Thông tin -->
+                    <div class="flex-grow w-full">
+                        <div class="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center gap-4">
+                            <div>
+                                <h3 class="text-lg font-bold mb-1 group-hover:text-primary transition-colors">Sony Alpha A7 IV</h3>
+                                <p class="text-xs text-textMuted tracking-widest uppercase">Thân máy / Black</p>
+                            </div>
+                            
+                            <div class="flex items-center gap-4 sm:gap-8 w-full sm:w-auto justify-between sm:justify-end">
+                                <!-- Giá đơn vị & Số lượng -->
+                                <div class="flex flex-col items-start sm:items-center gap-2">
+                                    <span class="text-sm text-textMuted hidden sm:block">58.990.000₫</span>
+                                    <div class="flex items-center bg-dark rounded border border-borderDark">
+                                        <button class="w-8 h-8 flex items-center justify-center text-textMuted hover:text-white hover:bg-borderDark rounded-l transition-colors btn-decrease">
+                                            <i class="ph ph-minus"></i>
+                                        </button>
+                                        <input type="number" value="1" min="1" class="w-10 h-8 bg-transparent text-center text-sm focus:outline-none qty-input">
+                                        <button class="w-8 h-8 flex items-center justify-center text-textMuted hover:text-white hover:bg-borderDark rounded-r transition-colors btn-increase">
+                                            <i class="ph ph-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Tổng phụ & Nút xóa -->
+                                <div class="flex items-center gap-4 sm:gap-6">
+                                    <span class="font-bold whitespace-nowrap item-total">58.990.000₫</span>
+                                    <button class="text-textMuted hover:text-red-500 transition-colors p-2 rounded-full hover:bg-red-500/10">
+                                        <i class="ph ph-trash text-xl"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Item 2 -->
+                <div class="bg-surface rounded-xl p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 border border-transparent hover:border-borderDark transition-all group cart-item" data-price="45990000">
+                    <div class="w-full sm:w-32 h-32 bg-dark rounded-lg flex items-center justify-center p-2 flex-shrink-0">
+                        <img src="images/sony-fe-50mm-f12-gm-1.png" alt="Lens Sony FE 50mm" class="object-contain w-full h-full drop-shadow-lg group-hover:scale-105 transition-transform duration-300">
+                    </div>
+                    
+                    <div class="flex-grow w-full">
+                        <div class="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center gap-4">
+                            <div>
+                                <h3 class="text-lg font-bold mb-1 group-hover:text-primary transition-colors">Lens Sony FE<br>50mm f/1.2 GM</h3>
+                                <p class="text-xs text-textMuted tracking-widest uppercase">G-Master Series</p>
+                            </div>
+                            
+                            <div class="flex items-center gap-4 sm:gap-8 w-full sm:w-auto justify-between sm:justify-end">
+                                <div class="flex flex-col items-start sm:items-center gap-2">
+                                    <span class="text-sm text-textMuted hidden sm:block">45.990.000₫</span>
+                                    <div class="flex items-center bg-dark rounded border border-borderDark">
+                                        <button class="w-8 h-8 flex items-center justify-center text-textMuted hover:text-white hover:bg-borderDark rounded-l transition-colors btn-decrease">
+                                            <i class="ph ph-minus"></i>
+                                        </button>
+                                        <input type="number" value="1" min="1" class="w-10 h-8 bg-transparent text-center text-sm focus:outline-none qty-input">
+                                        <button class="w-8 h-8 flex items-center justify-center text-textMuted hover:text-white hover:bg-borderDark rounded-r transition-colors btn-increase">
+                                            <i class="ph ph-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center gap-4 sm:gap-6">
+                                    <span class="font-bold whitespace-nowrap item-total">45.990.000₫</span>
+                                    <button class="text-textMuted hover:text-red-500 transition-colors p-2 rounded-full hover:bg-red-500/10">
+                                        <i class="ph ph-trash text-xl"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer của danh sách sản phẩm -->
+                <div class="flex flex-col sm:flex-row items-center justify-between mt-4 text-xs text-textMuted gap-4">
+                    <a href="#" class="flex items-center gap-2 hover:text-primary transition-colors">
+                        <i class="ph ph-arrow-left"></i>
+                        TIẾP TỤC MUA SẮM
+                    </a>
+                    <div class="flex items-center gap-2 border-l border-borderDark pl-4">
+                        <span class="uppercase">Sản phẩm của bạn được bảo hành chính hãng</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Cột phải: Tóm tắt đơn hàng -->
+            <div class="w-full lg:w-1/3">
+                <div class="bg-surface rounded-xl p-6 sm:p-8 border-t-2 border-primary sticky top-28">
+                    <h2 class="text-xl font-bold mb-6">Tóm tắt đơn hàng</h2>
+
+                    <div class="space-y-4 mb-6 text-sm">
+                        <div class="flex justify-between items-center text-textMuted">
+                            <span>TẠM TÍNH</span>
+                            <span class="text-textMain font-medium" id="subtotal">104.980.000₫</span>
+                        </div>
+                        <div class="flex justify-between items-center text-textMuted">
+                            <span>GIẢM GIÁ</span>
+                            <span class="text-textMain font-medium">- 0₫</span>
+                        </div>
+                        <div class="flex justify-between items-center text-textMuted">
+                            <span>PHÍ VẬN CHUYỂN</span>
+                            <span class="text-primary font-medium">Miễn phí</span>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-borderDark pt-6 mb-8">
+                        <div class="flex justify-between items-end">
+                            <span class="text-sm font-bold tracking-widest uppercase">Tổng<br>cộng</span>
+                            <span class="text-2xl sm:text-3xl font-bold text-primary" id="grand-total">104.980.000₫</span>
+                        </div>
+                    </div>
+
+                    <!-- Mã giảm giá -->
+                    <div class="mb-8">
+                        <label class="block text-xs text-textMuted tracking-wider mb-2 uppercase">Mã giảm giá</label>
+                        <div class="flex relative">
+                            <input type="text" placeholder="NHẬP MÃ TẠI ĐÂY" class="w-full bg-dark text-sm border border-borderDark rounded px-4 py-3 focus:outline-none focus:border-primary transition-colors placeholder:text-textMuted text-white">
+                            <button class="absolute right-0 top-0 h-full px-4 text-xs font-bold text-primary hover:text-primary-hover transition-colors uppercase">
+                                Áp dụng
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Nút Thanh toán -->
+                    <button type="button" data-action="checkout" class="w-full bg-primary text-dark font-bold text-sm uppercase tracking-wider py-4 rounded-lg hover:bg-primary-hover hover:scale-[1.02] transform transition-all shadow-[0_0_15px_rgba(0,234,0,0.3)] hover:shadow-[0_0_25px_rgba(0,234,0,0.5)]">
+                        Thanh toán ngay
+                    </button>
+
+                    <!-- Icon thanh toán -->
+                    <div class="flex justify-center gap-6 mt-8 text-textMuted text-2xl">
+                        <i class="ph ph-credit-card hover:text-white transition-colors cursor-pointer"></i>
+                        <i class="ph ph-bank hover:text-white transition-colors cursor-pointer"></i>
+                        <i class="ph ph-shield-check hover:text-white transition-colors cursor-pointer"></i>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark border-t border-borderDark mt-12 pt-12 pb-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-8 mb-12">
+                
+                <!-- Cột 1 -->
+                <div>
+                    <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
+                        <div class="h-8 flex items-center justify-center">
+                            <img src="images/Camera_Pro.png" alt="Logo Camera Pro" class="h-full w-auto object-contain">
+                        </div>
+                        Camera <span class="text-primary">Pro</span>
+                    </h3>
+                    <p class="text-textMuted text-sm leading-relaxed mb-6">
+                        Hệ thống cung cấp thiết bị nhiếp ảnh chuyên nghiệp hàng đầu Việt Nam. Đối tác chiến lược của Sony, Canon, Nikon và Fujifilm.
+                    </p>
+                    <div class="flex gap-3">
+                        <a href="#" class="w-8 h-8 border border-borderDark rounded flex items-center justify-center text-textMuted hover:text-primary hover:border-primary transition-colors"><i class="ph ph-globe"></i></a>
+                        <a href="#" class="w-8 h-8 border border-borderDark rounded flex items-center justify-center text-textMuted hover:text-primary hover:border-primary transition-colors"><i class="ph ph-share-network"></i></a>
+                        <a href="#" class="w-8 h-8 border border-borderDark rounded flex items-center justify-center text-textMuted hover:text-primary hover:border-primary transition-colors"><i class="ph ph-envelope-simple"></i></a>
+                    </div>
+                </div>
+
+                <!-- Cột 2 -->
+                <div>
+                    <h3 class="font-bold text-sm tracking-wider mb-4 uppercase">Hỗ trợ khách hàng</h3>
+                    <ul class="space-y-3 text-sm text-textMuted">
+                        <li><a href="#" class="hover:text-primary transition-colors">Chính sách bảo hành</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">Hướng dẫn thanh toán</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">Vận chuyển & Giao nhận</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">Đổi trả sản phẩm</a></li>
+                    </ul>
+                </div>
+
+                <!-- Cột 3 -->
+                <div>
+                    <h3 class="font-bold text-sm tracking-wider mb-4 uppercase">Về chúng tôi</h3>
+                    <ul class="space-y-3 text-sm text-textMuted">
+                        <li><a href="#" class="hover:text-primary transition-colors">Câu chuyện thương hiệu</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">Hệ thống cửa hàng</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">Liên hệ hỗ trợ</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">Tuyển dụng</a></li>
+                    </ul>
+                </div>
+
+                <!-- Cột 4 -->
+                <div>
+                    <h3 class="font-bold text-sm tracking-wider mb-4 uppercase">Đăng ký nhận tin</h3>
+                    <p class="text-textMuted text-sm mb-4">Cập nhật những mẫu máy ảnh mới nhất và các ưu đãi độc quyền.</p>
+                    <div class="relative">
+                        <input type="email" placeholder="Email của bạn" class="w-full bg-transparent border-b border-borderDark py-2 text-sm focus:outline-none focus:border-primary transition-colors pr-8">
+                        <button class="absolute right-0 top-1/2 transform -translate-y-1/2 text-textMuted hover:text-primary transition-colors">
+                            <i class="ph ph-caret-right font-bold"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Bottom Footer -->
+            <div class="flex flex-col md:flex-row justify-between items-center pt-6 border-t border-borderDark text-xs text-textMuted">
+                <p>© 2024 Camera Pro. Chuyên nghiệp trong từng khung hình.</p>
+                <div class="flex gap-6 mt-4 md:mt-0 uppercase tracking-wider font-medium">
+                    <a href="#" class="hover:text-primary transition-colors">Privacy Policy</a>
+                    <a href="#" class="hover:text-primary transition-colors">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Logic Javascript cơ bản cho Giỏ Hàng -->
+    <script>
+        // Hàm format tiền tệ VNĐ
+        const formatMoney = (amount) => {
+            return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "₫";
+        };
+
+        const updateCartTotal = () => {
+            const items = document.querySelectorAll('.cart-item');
+            let total = 0;
+
+            items.forEach(item => {
+                const price = parseInt(item.getAttribute('data-price'));
+                const qty = parseInt(item.querySelector('.qty-input').value);
+                const itemTotal = price * qty;
+                
+                // Cập nhật tổng tiền của từng sản phẩm
+                item.querySelector('.item-total').innerText = formatMoney(itemTotal);
+                total += itemTotal;
+            });
+
+            // Cập nhật tổng phụ và tổng cộng
+            document.getElementById('subtotal').innerText = formatMoney(total);
+            document.getElementById('grand-total').innerText = formatMoney(total);
+        };
+
+        // Gắn sự kiện cho các nút tăng giảm
+        document.querySelectorAll('.cart-item').forEach(item => {
+            const btnMinus = item.querySelector('.btn-decrease');
+            const btnPlus = item.querySelector('.btn-increase');
+            const inputQty = item.querySelector('.qty-input');
+
+            btnMinus.addEventListener('click', () => {
+                let currentVal = parseInt(inputQty.value);
+                if (currentVal > 1) {
+                    inputQty.value = currentVal - 1;
+                    updateCartTotal();
+                }
+            });
+
+            btnPlus.addEventListener('click', () => {
+                let currentVal = parseInt(inputQty.value);
+                inputQty.value = currentVal + 1;
+                updateCartTotal();
+            });
+
+            inputQty.addEventListener('change', () => {
+                if (inputQty.value < 1 || isNaN(inputQty.value)) {
+                    inputQty.value = 1;
+                }
+                updateCartTotal();
+            });
+            
+            // Logic cho nút xóa
+            const btnDelete = item.querySelector('.ph-trash').parentElement;
+            btnDelete.addEventListener('click', () => {
+                item.style.opacity = '0';
+                setTimeout(() => {
+                    item.remove();
+                    updateCartTotal();
+                }, 300);
+            });
+        });
+
+        // Xử lý sự kiện Mobile Menu
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileMenuIcon = mobileMenuBtn.querySelector('i');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            
+            // Đổi icon hamburger sang dấu X và ngược lại
+            if (mobileMenu.classList.contains('hidden')) {
+                mobileMenuIcon.classList.remove('ph-x');
+                mobileMenuIcon.classList.add('ph-list');
+            } else {
+                mobileMenuIcon.classList.remove('ph-list');
+                mobileMenuIcon.classList.add('ph-x');
+            }
+        });
+
+        // Page transition effects
+        const transitionDelay = 500;
+        function navigateWithFade(url) {
+            document.body.classList.add('fade-out');
+            setTimeout(() => {
+                window.location.href = url;
+            }, transitionDelay);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.body.classList.add('loaded');
+
+            document.querySelectorAll('a[href]').forEach(link => {
+                const href = link.getAttribute('href');
+                if (href && href !== '#' && !href.startsWith('javascript:') && !href.startsWith('mailto:') && !href.startsWith('tel:')) {
+                    link.addEventListener('click', function(event) {
+                        event.preventDefault();
+                        navigateWithFade(this.href);
+                    });
+                }
+            });
+
+            document.querySelectorAll('[data-action]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const action = btn.getAttribute('data-action');
+                    if (action === 'checkout') {
+                        navigateWithFade('ThanhToan.html');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

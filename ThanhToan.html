@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thanh Toán - Camera Pro</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: '#00ff41', // Xanh neon chủ đạo
+                        brandHover: '#33ff66',
+                        bgBase: '#0a0a0a', // Nền đen sâu nhất
+                        bgPanel: '#121212', // Nền các khối
+                        bgInput: '#0f0f0f', // Nền ô input
+                        borderCol: '#262626', // Viền xám tối
+                        textMuted: '#888888', // Chữ xám
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #0a0a0a;
+            color: #ffffff;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        /* Hide number input arrows */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+
+        /* Custom Radio Button Styles */
+        .payment-label input:checked + div {
+            border-color: #00ff41;
+        }
+        .payment-label input:checked + div .radio-outer {
+            border-color: #00ff41;
+        }
+        .payment-label input:checked + div .radio-inner {
+            background-color: #00ff41;
+            transform: scale(1);
+        }
+        .radio-inner {
+            transform: scale(0);
+            transition: transform 0.2s ease-in-out;
+        }
+        
+        /* Input Focus Transitions */
+        input, textarea {
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        /* Smooth transitions for hover effects */
+        a, button, .nav-link {
+            transition: all 0.2s ease-in-out;
+        }
+
+        body {
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        body.loaded {
+            opacity: 1;
+        }
+
+        body.fade-out {
+            opacity: 0;
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="border-b border-borderCol bg-bgBase sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo -->
+                <a href="TrangChu.html" class="flex-shrink-0 flex items-center gap-2 cursor-pointer group">
+                    <!-- Thay thế link placeholder bên dưới bằng đường dẫn ảnh logo của bạn -->
+                    <img src="images/Camera_Pro.png" alt="Camera Pro Logo" class="h-10 w-auto object-contain">
+                    
+                    <!-- Bạn có thể xóa thẻ span chứa chữ CAMERA PRO bên dưới nếu ảnh logo của bạn đã bao gồm cả chữ -->
+                    <span class="font-bold text-lg tracking-wider group-hover:text-brand transition-colors">CameraPro</span>
+                </a>
+
+                <!-- Desktop Navigation -->
+                <nav class="hidden md:flex space-x-8">
+                    <a href="TrangChu.html" class="text-xs font-semibold tracking-widest text-textMuted hover:text-white uppercase">Trang Chủ</a>
+                    <a href="DanhSachSanPham.html" class="text-xs font-semibold tracking-widest text-textMuted hover:text-white uppercase">Sản Phẩm</a>
+                    <a href="#" class="text-xs font-semibold tracking-widest text-textMuted hover:text-white uppercase">Phụ Kiện</a>
+                    <a href="#" class="text-xs font-semibold tracking-widest text-textMuted hover:text-white uppercase">Tin Tức</a>
+                    <a href="#" class="text-xs font-semibold tracking-widest text-textMuted hover:text-white uppercase">Hỗ Trợ</a>
+                </nav>
+
+                <!-- Right Actions -->
+                <div class="flex items-center space-x-6">
+                    <!-- Search Bar (Desktop) -->
+                    <div class="hidden lg:flex items-center bg-bgPanel rounded-md px-3 py-1.5 border border-borderCol focus-within:border-brand transition-colors">
+                        <input type="text" placeholder="Tìm kiếm..." class="bg-transparent text-sm text-white focus:outline-none w-48 placeholder-textMuted">
+                        <i data-lucide="search" class="w-4 h-4 text-brand cursor-pointer"></i>
+                    </div>
+
+                    <!-- Search Icon (Mobile) -->
+                    <button class="lg:hidden text-white hover:text-brand transition-colors">
+                        <i data-lucide="search" class="w-5 h-5"></i>
+                    </button>
+
+                    <!-- User Icon -->
+                    <a href="DangNhap.html" class="text-white hover:text-brand transition-colors">
+                        <i data-lucide="user" class="w-5 h-5"></i>
+                    </a>
+
+                    <!-- Cart Icon -->
+                    <a href="GioHang.html" class="text-brand hover:text-brandHover transition-colors relative group">
+                        <i data-lucide="shopping-cart" class="w-6 h-6"></i>
+                        <span class="absolute -top-2 -right-2 bg-brand text-black text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center group-hover:bg-brandHover transition-colors">2</span>
+                    </a>
+
+                    <!-- Mobile Menu Button -->
+                    <button id="mobile-menu-btn" class="md:hidden text-white hover:text-brand transition-colors">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu (Hidden by default) -->
+        <div id="mobile-menu" class="hidden md:hidden bg-bgPanel border-t border-borderCol absolute w-full left-0 top-20 shadow-xl">
+            <div class="px-4 pt-2 pb-6 space-y-1 flex flex-col">
+                <a href="TrangChu.html" class="block px-3 py-3 text-sm font-medium text-white border-b border-borderCol hover:text-brand">TRANG CHỦ</a>
+                <a href="DanhSachSanPham.html" class="block px-3 py-3 text-sm font-medium text-white border-b border-borderCol hover:text-brand">SẢN PHẨM</a>
+                <a href="#" class="block px-3 py-3 text-sm font-medium text-white border-b border-borderCol hover:text-brand">PHỤ KIỆN</a>
+                <a href="#" class="block px-3 py-3 text-sm font-medium text-white border-b border-borderCol hover:text-brand">TIN TỨC</a>
+                <a href="#" class="block px-3 py-3 text-sm font-medium text-white hover:text-brand">HỖ TRỢ</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+        
+        <!-- Breadcrumbs -->
+        <div class="flex items-center text-xs tracking-widest uppercase mb-8 lg:mb-12 font-medium text-textMuted">
+            <a href="#" class="hover:text-white transition-colors">TRANG CHỦ</a>
+            <i data-lucide="chevron-right" class="w-3 h-3 mx-2"></i>
+            <a href="#" class="hover:text-white transition-colors">GIỎ HÀNG</a>
+            <i data-lucide="chevron-right" class="w-3 h-3 mx-2"></i>
+            <span class="text-brand">THANH TOÁN</span>
+        </div>
+
+        <div class="flex flex-col lg:flex-row gap-10 lg:gap-16">
+            
+            <!-- Left Column: Form -->
+            <div class="w-full lg:w-7/12 xl:w-2/3">
+                <h1 class="text-2xl lg:text-3xl font-semibold mb-8 tracking-wide">Thông tin thanh toán</h1>
+
+                <form action="#" method="POST" class="space-y-6">
+                    <!-- Name -->
+                    <div>
+                        <label class="block text-xs font-semibold text-textMuted uppercase tracking-wider mb-2">Họ và tên</label>
+                        <input type="text" placeholder="Nhập họ và tên của bạn" class="w-full bg-bgInput border border-borderCol rounded-md px-4 py-3.5 text-sm text-white placeholder-textMuted focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-all">
+                    </div>
+
+                    <!-- Email & Phone Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-xs font-semibold text-textMuted uppercase tracking-wider mb-2">Email</label>
+                            <input type="email" placeholder="example@camerapro.vn" class="w-full bg-bgInput border border-borderCol rounded-md px-4 py-3.5 text-sm text-white placeholder-textMuted focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-all">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-textMuted uppercase tracking-wider mb-2">Số điện thoại</label>
+                            <input type="tel" placeholder="+84 ..." class="w-full bg-bgInput border border-borderCol rounded-md px-4 py-3.5 text-sm text-white placeholder-textMuted focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-all">
+                        </div>
+                    </div>
+
+                    <!-- Address -->
+                    <div>
+                        <label class="block text-xs font-semibold text-textMuted uppercase tracking-wider mb-2">Địa chỉ giao hàng</label>
+                        <input type="text" placeholder="Số nhà, tên đường, phường/xã..." class="w-full bg-bgInput border border-borderCol rounded-md px-4 py-3.5 text-sm text-white placeholder-textMuted focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-all">
+                    </div>
+
+                    <!-- Note -->
+                    <div>
+                        <label class="block text-xs font-semibold text-textMuted uppercase tracking-wider mb-2">Ghi chú (Tùy chọn)</label>
+                        <textarea rows="4" placeholder="Yêu cầu đặc biệt về đơn hàng..." class="w-full bg-bgInput border border-borderCol rounded-md px-4 py-3.5 text-sm text-white placeholder-textMuted focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-all resize-none"></textarea>
+                    </div>
+
+                    <!-- Payment Methods -->
+                    <div class="pt-6">
+                        <h2 class="text-xl font-semibold mb-6 tracking-wide">Phương thức thanh toán</h2>
+                        
+                        <div class="space-y-4">
+                            <!-- Option 1: Credit Card -->
+                            <label class="payment-label block cursor-pointer group">
+                                <input type="radio" name="payment_method" value="credit_card" class="hidden" checked>
+                                <div class="flex items-center justify-between p-5 border border-borderCol rounded-lg bg-bgInput group-hover:border-gray-500 transition-colors">
+                                    <div class="flex items-center gap-4">
+                                        <div class="radio-outer w-5 h-5 rounded-full border-2 border-textMuted flex items-center justify-center transition-colors">
+                                            <div class="radio-inner w-2.5 h-2.5 rounded-full"></div>
+                                        </div>
+                                        <div>
+                                            <div class="font-medium text-[15px] text-white">Thẻ tín dụng / Ghi nợ</div>
+                                            <div class="text-xs text-textMuted mt-0.5 tracking-wide">VISA, MASTERCARD, JCB</div>
+                                        </div>
+                                    </div>
+                                    <i data-lucide="credit-card" class="w-6 h-6 text-brand"></i>
+                                </div>
+                            </label>
+
+                            <!-- Option 2: Bank Transfer -->
+                            <label class="payment-label block cursor-pointer group">
+                                <input type="radio" name="payment_method" value="bank_transfer" class="hidden">
+                                <div class="flex items-center justify-between p-5 border border-borderCol rounded-lg bg-bgInput group-hover:border-gray-500 transition-colors">
+                                    <div class="flex items-center gap-4">
+                                        <div class="radio-outer w-5 h-5 rounded-full border-2 border-textMuted flex items-center justify-center transition-colors">
+                                            <div class="radio-inner w-2.5 h-2.5 rounded-full"></div>
+                                        </div>
+                                        <div>
+                                            <div class="font-medium text-[15px] text-white">Chuyển khoản ngân hàng</div>
+                                            <div class="text-xs text-textMuted mt-0.5 tracking-wide">XÁC NHẬN TRONG 15 PHÚT</div>
+                                        </div>
+                                    </div>
+                                    <i data-lucide="landmark" class="w-6 h-6 text-brand"></i>
+                                </div>
+                            </label>
+
+                            <!-- Option 3: COD -->
+                            <label class="payment-label block cursor-pointer group">
+                                <input type="radio" name="payment_method" value="cod" class="hidden">
+                                <div class="flex items-center justify-between p-5 border border-borderCol rounded-lg bg-bgInput group-hover:border-gray-500 transition-colors">
+                                    <div class="flex items-center gap-4">
+                                        <div class="radio-outer w-5 h-5 rounded-full border-2 border-textMuted flex items-center justify-center transition-colors">
+                                            <div class="radio-inner w-2.5 h-2.5 rounded-full"></div>
+                                        </div>
+                                        <div>
+                                            <div class="font-medium text-[15px] text-white">Thanh toán khi nhận hàng (COD)</div>
+                                            <div class="text-xs text-textMuted mt-0.5 tracking-wide">KIỂM TRA HÀNG TRƯỚC KHI TRẢ TIỀN</div>
+                                        </div>
+                                    </div>
+                                    <i data-lucide="truck" class="w-6 h-6 text-brand"></i>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Right Column: Order Summary (Sticky) -->
+            <div class="w-full lg:w-5/12 xl:w-1/3">
+                <div class="bg-bgPanel rounded-xl p-6 lg:p-8 sticky top-28 border border-borderCol shadow-2xl">
+                    <h2 class="text-xl font-semibold mb-8">Đơn hàng của bạn</h2>
+
+                    <!-- Product List -->
+                    <div class="space-y-6 mb-8 border-b border-borderCol pb-8">
+                        <!-- Item 1 -->
+                        <div class="flex items-center gap-4 group">
+                            <div class="w-20 h-20 bg-[#1a1a1a] rounded-md border border-borderCol flex-shrink-0 overflow-hidden relative">
+                                <!-- Placeholder Image matching the vibe -->
+                                <img src="images/may-anh-sony-a7-iv.png" alt="Sony Alpha A7 IV" class="w-full h-full object-cover mix-blend-lighten opacity-80 group-hover:scale-110 transition-transform duration-500">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                            </div>
+                            <div class="flex-grow">
+                                <h3 class="text-[15px] font-medium text-white mb-1">Sony Alpha A7 IV</h3>
+                                <p class="text-[11px] text-textMuted uppercase tracking-wider mb-2">THÂN MÁY / BLACK</p>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-400">Số lượng:01</span>
+                                    <span class="font-semibold text-brand">58.990.000đ</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Item 2 -->
+                        <div class="flex items-center gap-4 group">
+                            <div class="w-20 h-20 bg-[#1a1a1a] rounded-md border border-borderCol flex-shrink-0 overflow-hidden relative">
+                                <!-- Placeholder Image -->
+                                <img src="images/sony-fe-50mm-f12-gm-1.png" alt="Lens Sony FE 50mm f/1.2 GM" class="w-full h-full object-cover mix-blend-lighten opacity-80 group-hover:scale-110 transition-transform duration-500">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                            </div>
+                            <div class="flex-grow">
+                                <h3 class="text-[15px] font-medium text-white mb-1">Lens Sony FE 50mm f/1.2 GM</h3>
+                                <p class="text-[11px] text-textMuted uppercase tracking-wider mb-2">G-MASTER SERIES</p>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-400">Số lượng:01</span>
+                                    <span class="font-semibold text-brand">45.990.000đ</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Totals -->
+                    <div class="space-y-4 mb-8">
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-gray-400 uppercase tracking-wider font-medium">Tạm tính</span>
+                            <span class="font-medium">104.980.000đ</span>
+                        </div>
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-gray-400 uppercase tracking-wider font-medium">Vận chuyển</span>
+                            <span class="text-brand font-medium">MIỄN PHÍ</span>
+                        </div>
+                        <div class="pt-4 flex items-center justify-between border-t border-borderCol mt-4">
+                            <span class="text-lg font-semibold uppercase tracking-wider">Tổng cộng</span>
+                            <span class="text-2xl font-bold text-brand">104.980.000đ</span>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button class="w-full bg-brand text-black font-bold py-4 rounded-md text-[15px] uppercase tracking-wide hover:bg-brandHover transform hover:-translate-y-0.5 transition-all duration-200 shadow-[0_0_15px_rgba(0,255,65,0.2)] hover:shadow-[0_0_25px_rgba(0,255,65,0.4)]">
+                        Xác nhận thanh toán
+                    </button>
+
+                    <p class="text-center text-xs text-textMuted mt-5 leading-relaxed">
+                        Bằng cách nhấn xác nhận, bạn đồng ý với các <br>Điều khoản & Chính sách bảo mật của Camera Pro.
+                    </p>
+
+                    <!-- Payment Icons Placeholder -->
+                    <div class="flex justify-center items-center gap-4 mt-8 opacity-50">
+                        <div class="w-10 h-6 bg-gray-700 rounded-sm"></div>
+                        <div class="w-10 h-6 bg-gray-700 rounded-sm"></div>
+                        <div class="w-10 h-6 bg-gray-700 rounded-sm"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-[#050505] border-t border-borderCol pt-16 pb-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 mb-16">
+                
+                <!-- Brand Info -->
+                <div>
+                    <h3 class="text-brand font-bold text-lg mb-6 tracking-wide">CAMERA PRO</h3>
+                    <p class="text-sm text-textMuted leading-relaxed mb-6">
+                        Cửa hàng phân phối thiết bị hình ảnh cao cấp. Tận tâm phục vụ giới chuyên nghiệp từ 2012.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors"><i data-lucide="instagram" class="w-5 h-5"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors"><i data-lucide="facebook" class="w-5 h-5"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors"><i data-lucide="youtube" class="w-5 h-5"></i></a>
+                    </div>
+                </div>
+
+                <!-- Customer Support -->
+                <div>
+                    <h3 class="text-brand text-xs font-bold uppercase tracking-widest mb-6">Hỗ trợ khách hàng</h3>
+                    <ul class="space-y-4">
+                        <li><a href="#" class="text-sm text-gray-400 hover:text-white hover:translate-x-1 inline-block transition-transform">Chính sách bảo hành</a></li>
+                        <li><a href="#" class="text-sm text-gray-400 hover:text-white hover:translate-x-1 inline-block transition-transform">Trung tâm sửa chữa</a></li>
+                        <li><a href="#" class="text-sm text-gray-400 hover:text-white hover:translate-x-1 inline-block transition-transform">Vận chuyển & Giao hàng</a></li>
+                        <li><a href="#" class="text-sm text-gray-400 hover:text-white hover:translate-x-1 inline-block transition-transform">Trả góp 0%</a></li>
+                    </ul>
+                </div>
+
+                <!-- About Us -->
+                <div>
+                    <h3 class="text-brand text-xs font-bold uppercase tracking-widest mb-6">Về chúng tôi</h3>
+                    <ul class="space-y-4">
+                        <li><a href="#" class="text-sm text-gray-400 hover:text-white hover:translate-x-1 inline-block transition-transform">Hệ thống cửa hàng</a></li>
+                        <li><a href="#" class="text-sm text-gray-400 hover:text-white hover:translate-x-1 inline-block transition-transform">Tuyển dụng</a></li>
+                        <li><a href="#" class="text-sm text-gray-400 hover:text-white hover:translate-x-1 inline-block transition-transform">Liên hệ</a></li>
+                        <li><a href="#" class="text-sm text-gray-400 hover:text-white hover:translate-x-1 inline-block transition-transform">Tin tức & Sự kiện</a></li>
+                    </ul>
+                </div>
+
+                <!-- Newsletter -->
+                <div>
+                    <h3 class="text-brand text-xs font-bold uppercase tracking-widest mb-6">Đăng ký nhận tin</h3>
+                    <form class="relative group">
+                        <input type="email" placeholder="Địa chỉ email của bạn" class="w-full bg-bgPanel border border-borderCol rounded-md px-4 py-3.5 text-sm text-white placeholder-textMuted focus:outline-none focus:border-brand transition-colors">
+                        <button type="submit" class="absolute right-2 top-2 bottom-2 px-4 text-brand text-xs font-bold uppercase tracking-wider hover:text-brandHover transition-colors">
+                            Gửi
+                        </button>
+                    </form>
+                    <p class="text-[11px] text-textMuted mt-4 leading-relaxed">
+                        Nhận thông báo về các sản phẩm Leica và Sony mới nhất cùng các ưu đãi độc quyền.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Copyright & Legal -->
+            <div class="border-t border-borderCol pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+                <p class="text-xs text-textMuted uppercase tracking-wider">
+                    © 2024 CAMERA PRO. HIGH-END EDITORIAL PRECISION.
+                </p>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-xs text-textMuted hover:text-white uppercase tracking-wider transition-colors">Quyền riêng tư</a>
+                    <a href="#" class="text-xs text-textMuted hover:text-white uppercase tracking-wider transition-colors">Điều khoản</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Initialize Icons & Mobile Menu Script -->
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Mobile Menu Toggle Logic
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuIcon = mobileMenuBtn.querySelector('i');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            // Change icon from menu to X
+            if (mobileMenu.classList.contains('hidden')) {
+                menuIcon.setAttribute('data-lucide', 'menu');
+            } else {
+                menuIcon.setAttribute('data-lucide', 'x');
+            }
+            lucide.createIcons(); // Refresh icon
+        });
+
+        // Add subtle animation to payment options when selected
+        const paymentLabels = document.querySelectorAll('.payment-label');
+        paymentLabels.forEach(label => {
+            label.addEventListener('click', function() {
+                // Remove slight scaling from all
+                document.querySelectorAll('.payment-label > div').forEach(div => {
+                    div.style.transform = 'scale(1)';
+                });
+                // Add tiny scale effect to selected one
+                const innerDiv = this.querySelector(':scope > div');
+                innerDiv.style.transform = 'scale(0.99)';
+                setTimeout(() => {
+                    innerDiv.style.transform = 'scale(1)';
+                }, 100);
+            });
+        });
+
+        // Page transition effects
+        const transitionDelay = 500;
+        function navigateWithFade(url) {
+            document.body.classList.add('fade-out');
+            setTimeout(() => {
+                window.location.href = url;
+            }, transitionDelay);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.body.classList.add('loaded');
+
+            document.querySelectorAll('a[href]').forEach(link => {
+                const href = link.getAttribute('href');
+                if (href && href !== '#' && !href.startsWith('javascript:') && !href.startsWith('mailto:') && !href.startsWith('tel:')) {
+                    link.addEventListener('click', function(event) {
+                        event.preventDefault();
+                        navigateWithFade(this.href);
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập - Camera Pro</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            dark: '#0f0f11',      // Màu nền chính (form)
+                            darker: '#0a0a0c',    // Màu header/footer
+                            input: '#1a1a1c',     // Màu nền ô input
+                            green: '#00ff33',     // Màu xanh neon chủ đạo
+                            greenHover: '#00cc29',
+                            text: '#f3f4f6',      // Màu chữ trắng
+                            textMuted: '#9ca3af', // Màu chữ xám
+                            border: '#27272a'     // Màu viền
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Thư viện Icon Lucide -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* Custom Styles for specific details */
+        body {
+            background-color: #0a0a0c;
+            color: #f3f4f6;
+        }
+
+        /* Khung nhắm góc trên ảnh (Crop marks) */
+        .crop-mark-tl {
+            position: absolute;
+            top: 40px;
+            left: 40px;
+            width: 40px;
+            height: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+            border-left: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .crop-mark-br {
+            position: absolute;
+            bottom: 40px;
+            right: 40px;
+            width: 40px;
+            height: 40px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            border-right: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        /* Tùy chỉnh Checkbox */
+        input[type="checkbox"] {
+            appearance: none;
+            background-color: transparent;
+            margin: 0;
+            font: inherit;
+            color: currentColor;
+            width: 1.15em;
+            height: 1.15em;
+            border: 1px solid #4b5563;
+            border-radius: 0.15em;
+            display: grid;
+            place-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+
+        input[type="checkbox"]::before {
+            content: "";
+            width: 0.65em;
+            height: 0.65em;
+            transform: scale(0);
+            transition: 120ms transform ease-in-out;
+            box-shadow: inset 1em 1em var(--brand-green, #00ff33);
+            background-color: var(--brand-green, #00ff33);
+            transform-origin: center;
+            clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+        }
+
+        input[type="checkbox"]:checked {
+            border-color: var(--brand-green, #00ff33);
+        }
+
+        input[type="checkbox"]:checked::before {
+            transform: scale(1);
+        }
+
+        /* Ẩn scrollbar cho giao diện mượt hơn */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0a0c; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #27272a; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3f3f46; 
+        }
+
+        body {
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        body.loaded {
+            opacity: 1;
+        }
+
+        body.fade-out {
+            opacity: 0;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen font-sans antialiased">
+
+    <!-- Header -->
+    <header class="bg-brand-darker border-b border-brand-border sticky top-0 z-50">
+        <div class="max-w-[1600px] mx-auto px-6 h-16 flex items-center justify-between">
+            
+            <!-- Logo & Navigation (Left) -->
+            <div class="flex items-center gap-12">
+                <!-- Logo -->
+                <a href="TrangChu.html" class="flex items-center gap-2 group">
+                    <!-- THÊM LOGO CỦA BẠN VÀO ĐÂY: Thay đổi link trong thuộc tính src="" -->
+                    <img src="images/Camera_Pro.png" alt="Camera Pro Logo" class="h-8 w-auto object-contain group-hover:scale-105 transition-transform">
+                    <span class="font-bold text-sm tracking-wider">Camera <span class="text-brand-green">Pro</span></span>
+                </a>
+
+                <!-- Desktop Menu -->
+                <nav class="hidden lg:flex items-center gap-8">
+                    <a href="TrangChu.html" class="text-xs font-semibold tracking-widest text-brand-textMuted hover:text-brand-green transition-colors">TRANG CHỦ</a>
+                    <a href="DanhSachSanPham.html" class="text-xs font-semibold tracking-widest text-brand-textMuted hover:text-brand-green transition-colors">SẢN PHẨM</a>
+                    <a href="#" class="text-xs font-semibold tracking-widest text-brand-textMuted hover:text-brand-green transition-colors">PHỤ KIỆN</a>
+                    <a href="#" class="text-xs font-semibold tracking-widest text-brand-textMuted hover:text-brand-green transition-colors">TIN TỨC</a>
+                    <a href="#" class="text-xs font-semibold tracking-widest text-brand-textMuted hover:text-brand-green transition-colors">HỖ TRỢ</a>
+                </nav>
+            </div>
+
+            <!-- Search & User (Right) -->
+            <div class="flex items-center gap-4">
+                <!-- Search Bar (Desktop) -->
+                <div class="hidden md:flex relative group">
+                    <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-textMuted group-focus-within:text-brand-green transition-colors"></i>
+                    <input type="text" placeholder="Tìm kiếm sản phẩm..." class="bg-brand-input border border-transparent focus:border-brand-border text-sm text-white rounded-full pl-10 pr-4 py-1.5 w-64 outline-none transition-all placeholder-brand-textMuted/50 focus:w-72">
+                </div>
+                
+                <!-- User Profile -->
+                <a href="DangNhap.html" class="p-1 rounded-full border border-brand-border hover:border-brand-textMuted transition-colors ml-2">
+                    <i data-lucide="user" class="w-5 h-5 text-brand-textMuted"></i>
+                </a>
+
+                <!-- Mobile Menu Toggle -->
+                <button id="mobile-menu-btn" class="lg:hidden p-2 text-brand-textMuted hover:text-white ml-2">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu (Hidden by default) -->
+        <div id="mobile-menu" class="hidden lg:hidden bg-brand-darker border-t border-brand-border px-6 py-4 space-y-4">
+            
+            <!-- Search Bar (Mobile) -->
+            <div class="relative group block md:hidden mb-6">
+                <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-textMuted group-focus-within:text-brand-green transition-colors"></i>
+                <input type="text" placeholder="Tìm kiếm sản phẩm..." class="w-full bg-brand-input border border-brand-border focus:border-brand-green/50 text-sm text-white rounded-md pl-10 pr-4 py-3 outline-none transition-all placeholder-brand-textMuted/50 focus:ring-1 focus:ring-brand-green/50">
+            </div>
+
+            <a href="TrangChu.html" class="block text-sm font-semibold tracking-widest text-brand-textMuted hover:text-brand-green transition-colors">TRANG CHỦ</a>
+            <a href="DanhSachSanPham.html" class="block text-sm font-semibold tracking-widest text-brand-textMuted hover:text-brand-green transition-colors">SẢN PHẨM</a>
+            <a href="#" class="block text-sm font-semibold tracking-widest text-brand-textMuted hover:text-brand-green transition-colors">PHỤ KIỆN</a>
+            <a href="#" class="block text-sm font-semibold tracking-widest text-brand-textMuted hover:text-brand-green transition-colors">TIN TỨC</a>
+            <a href="#" class="block text-sm font-semibold tracking-widest text-brand-textMuted hover:text-brand-green transition-colors">HỖ TRỢ</a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow flex flex-col md:flex-row">
+        
+        <!-- Left Side: Image Banner -->
+        <section class="w-full md:w-[55%] relative flex flex-col justify-center min-h-[400px] md:min-h-0 bg-neutral-900 overflow-hidden">
+            <!-- Background Image -->
+            <div class="absolute inset-0 bg-cover bg-center opacity-80 mix-blend-luminosity" style="background-image: url('https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=1000&auto=format&fit=crop');"></div>
+            
+            <!-- Dark Gradient Overlay -->
+            <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent"></div>
+
+            <!-- UI Details (Crop marks) -->
+            <div class="crop-mark-tl hidden sm:block"></div>
+            <div class="crop-mark-br hidden sm:block"></div>
+
+            <!-- Content overlay -->
+            <div class="relative z-10 px-8 sm:px-16 md:px-12 lg:px-20 max-w-2xl mt-12 md:mt-0">
+                
+                <!-- Status Badge -->
+                <div class="flex items-center gap-2 mb-6">
+                    <span class="relative flex h-2 w-2">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-green opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-2 w-2 bg-brand-green"></span>
+                    </span>
+                    <span class="text-xs font-bold tracking-[0.2em] text-gray-300">LIVE VIEW MODE</span>
+                </div>
+
+                <!-- Main Heading -->
+                <h1 class="text-5xl lg:text-6xl xl:text-7xl font-bold leading-[1.1] tracking-tight mb-4 uppercase">
+                    Chạm tới <br />
+                    <span class="text-brand-green">sự<br/>hoàn hảo.</span>
+                </h1>
+
+                <!-- Description -->
+                <p class="text-gray-400 text-sm md:text-base max-w-sm leading-relaxed mb-8">
+                    Hệ sinh thái dành riêng cho các nhà sáng tạo hình ảnh chuyên nghiệp. Quản lý thiết bị và dịch vụ của bạn tại một nơi duy nhất.
+                </p>
+            </div>
+
+            <!-- Camera Stats (Bottom center) -->
+            <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 opacity-60">
+                <span class="text-[10px] tracking-widest font-mono">ISO 100</span>
+                <span class="text-[10px] tracking-widest font-mono">F/2.8 1/250S</span>
+                <span class="text-[10px] tracking-widest font-mono">RAW 14-BIT</span>
+            </div>
+        </section>
+
+        <!-- Right Side: Login Form -->
+        <section class="w-full md:w-[45%] bg-brand-dark flex flex-col justify-center px-8 py-16 sm:px-16 lg:px-24 xl:px-32 relative">
+            
+            <!-- Subtle background glow -->
+            <div class="absolute top-1/4 right-0 w-64 h-64 bg-brand-green/5 rounded-full blur-[100px] pointer-events-none"></div>
+
+            <div class="max-w-md w-full mx-auto relative z-10">
+                <!-- Header -->
+                <div class="mb-10">
+                    <h2 class="text-3xl font-bold mb-3">Đăng nhập</h2>
+                    <p class="text-brand-textMuted text-sm">Chào mừng bạn quay lại với Camera <span class="text-brand-green">Pro</span>.</p>
+                </div>
+
+                <!-- Form -->
+                <form action="#" method="POST" class="space-y-6">
+                    
+                    <!-- Email Input -->
+                    <div class="space-y-2">
+                        <label for="email" class="block text-[10px] font-bold tracking-widest text-brand-textMuted uppercase">Email hoặc tên đăng nhập</label>
+                        <div class="relative group">
+                            <input type="text" id="email" name="email" placeholder="admin@camerapro.com" 
+                                class="w-full bg-brand-input border border-brand-border text-white text-sm rounded-md px-4 py-3.5 outline-none transition-all focus:border-brand-green/50 focus:ring-1 focus:ring-brand-green/50 placeholder-brand-textMuted/30">
+                            <i data-lucide="at-sign" class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-textMuted group-focus-within:text-brand-green transition-colors"></i>
+                        </div>
+                    </div>
+
+                    <!-- Password Input -->
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <label for="password" class="block text-[10px] font-bold tracking-widest text-brand-textMuted uppercase">Mật khẩu</label>
+                            <a href="#" class="text-[10px] font-bold tracking-widest text-brand-green hover:text-brand-greenHover uppercase transition-colors">Quên mật khẩu?</a>
+                        </div>
+                        <div class="relative group">
+                            <input type="password" id="password" name="password" placeholder="••••••••" 
+                                class="w-full bg-brand-input border border-brand-border text-white text-sm rounded-md px-4 py-3.5 outline-none transition-all focus:border-brand-green/50 focus:ring-1 focus:ring-brand-green/50 placeholder-brand-textMuted/30 tracking-widest">
+                            <i data-lucide="lock" class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-textMuted group-focus-within:text-brand-green transition-colors"></i>
+                        </div>
+                    </div>
+
+                    <!-- Remember Me -->
+                    <div class="flex items-center gap-3 py-2">
+                        <input type="checkbox" id="remember" name="remember">
+                        <label for="remember" class="text-sm text-brand-textMuted cursor-pointer select-none">Ghi nhớ đăng nhập</label>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="w-full bg-brand-green hover:bg-brand-greenHover text-black font-bold text-sm tracking-wider uppercase py-4 rounded-md transition-all duration-300 transform active:scale-[0.98] shadow-[0_0_20px_rgba(0,255,51,0.2)] hover:shadow-[0_0_25px_rgba(0,255,51,0.4)]">
+                        Đăng nhập
+                    </button>
+                </form>
+
+                <!-- Sign up link -->
+                <div class="mt-8 text-sm text-brand-textMuted">
+                    Chưa có tài khoản? <a href="DangKy.html" class="text-brand-green font-semibold hover:underline ml-1">Đăng ký ngay</a>
+                </div>
+
+                <!-- Alternative Login Methods -->
+                <div class="mt-12 flex gap-4">
+                    <!-- Biometric -->
+                    <button class="flex-1 flex flex-col items-center justify-center gap-3 p-4 border border-brand-border rounded-md hover:border-brand-green/50 hover:bg-brand-green/5 transition-all group">
+                        <div class="w-8 h-8 rounded-full bg-brand-input flex items-center justify-center group-hover:bg-brand-green/10 transition-colors">
+                            <i data-lucide="fingerprint" class="w-4 h-4 text-brand-textMuted group-hover:text-brand-green transition-colors"></i>
+                        </div>
+                        <span class="text-[10px] font-bold tracking-widest text-brand-textMuted uppercase group-hover:text-white transition-colors">Sinh trắc học</span>
+                    </button>
+
+                    <!-- 2FA -->
+                    <button class="flex-1 flex flex-col items-center justify-center gap-3 p-4 border border-brand-border rounded-md hover:border-brand-green/50 hover:bg-brand-green/5 transition-all group">
+                        <div class="w-8 h-8 rounded-full bg-brand-input flex items-center justify-center group-hover:bg-brand-green/10 transition-colors">
+                            <i data-lucide="shield-check" class="w-4 h-4 text-brand-textMuted group-hover:text-brand-green transition-colors"></i>
+                        </div>
+                        <span class="text-[10px] font-bold tracking-widest text-brand-textMuted uppercase group-hover:text-white transition-colors">Xác thực 2FA</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-brand-darker border-t border-brand-border pt-16 pb-8">
+        <div class="max-w-[1600px] mx-auto px-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
+            
+            <!-- Col 1: Brand Info -->
+            <div class="space-y-4">
+                <a href="#" class="flex items-center gap-2 mb-6">
+                    <!-- THÊM LOGO CỦA BẠN VÀO ĐÂY: Thay đổi link trong thuộc tính src="" -->
+                    <img src="images/Camera_Pro.png" alt="Camera Pro Logo" class="h-6 w-auto object-contain">
+                    <span class="font-bold text-sm tracking-wider text-white">Camera <span class="text-brand-green">Pro</span></span>
+                </a>
+                <p class="text-xs text-brand-textMuted leading-relaxed">
+                    © 2024 Camera Pro. All rights reserved.<br>
+                    Precision in every pixel.
+                </p>
+            </div>
+
+            <!-- Col 2: Products -->
+            <div>
+                <h4 class="text-[11px] font-bold tracking-widest text-white uppercase mb-6">Sản phẩm</h4>
+                <ul class="space-y-4">
+                    <li><a href="#" class="text-sm text-brand-textMuted hover:text-white hover:underline underline-offset-4 decoration-brand-textMuted transition-all">Về chúng tôi</a></li>
+                    <li><a href="#" class="text-sm text-brand-textMuted hover:text-white hover:underline underline-offset-4 decoration-brand-textMuted transition-all">Chính sách bảo hành</a></li>
+                </ul>
+            </div>
+
+            <!-- Col 3: Support -->
+            <div>
+                <h4 class="text-[11px] font-bold tracking-widest text-white uppercase mb-6">Hỗ trợ</h4>
+                <ul class="space-y-4">
+                    <li><a href="#" class="text-sm text-brand-textMuted hover:text-white hover:underline underline-offset-4 decoration-brand-textMuted transition-all">Hướng dẫn mua hàng</a></li>
+                    <li><a href="#" class="text-sm text-brand-textMuted hover:text-white hover:underline underline-offset-4 decoration-brand-textMuted transition-all">Trung tâm hỗ trợ</a></li>
+                </ul>
+            </div>
+
+            <!-- Col 4: Social -->
+            <div>
+                <h4 class="text-[11px] font-bold tracking-widest text-white uppercase mb-6">Theo dõi</h4>
+                <div class="flex items-center gap-6">
+                    <a href="#" class="text-sm text-brand-textMuted hover:text-white transition-colors">Facebook</a>
+                    <a href="#" class="text-sm text-brand-textMuted hover:text-white transition-colors">Instagram</a>
+                    <a href="#" class="text-sm text-brand-textMuted hover:text-white transition-colors">YouTube</a>
+                </div>
+            </div>
+
+        </div>
+    </footer>
+
+    <!-- Khởi tạo Icon và Script -->
+    <script>
+        // Khởi tạo Lucide Icons
+        lucide.createIcons();
+
+        // Script cho Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Page transition effects
+        const transitionDelay = 500;
+        function navigateWithFade(url) {
+            document.body.classList.add('fade-out');
+            setTimeout(() => {
+                window.location.href = url;
+            }, transitionDelay);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.body.classList.add('loaded');
+
+            document.querySelectorAll('a[href]').forEach(link => {
+                const href = link.getAttribute('href');
+                if (href && href !== '#' && !href.startsWith('javascript:') && !href.startsWith('mailto:') && !href.startsWith('tel:')) {
+                    link.addEventListener('click', function(event) {
+                        event.preventDefault();
+                        navigateWithFade(this.href);
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

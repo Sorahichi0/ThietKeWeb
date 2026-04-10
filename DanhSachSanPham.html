@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh Mục Sản Phẩm - DigiCam Pro</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- Cấu hình màu tùy chỉnh cho Tailwind -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'brand-bg': '#0f0f0f',
+                        'brand-card': '#1a1a1a',
+                        'brand-green': '#00ff00',
+                        'brand-green-hover': '#33ff33',
+                        'brand-gray': '#2a2a2a',
+                        'brand-text-gray': '#888888',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Tùy chỉnh thanh cuộn */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f0f0f;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00ff00;
+        }
+        
+        /* Checkbox custom */
+        input[type="checkbox"] {
+            accent-color: #2563eb;
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+        
+        /* Range slider custom */
+        input[type=range] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            appearance: none;
+            -webkit-appearance: none;
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            background: #00ff00;
+            cursor: pointer;
+            margin-top: -6px;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #333;
+            border-radius: 2px;
+        }
+
+        body {
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        body.loaded {
+            opacity: 1;
+        }
+
+        body.fade-out {
+            opacity: 0;
+        }
+    </style>
+</head>
+<body class="bg-brand-bg text-white font-sans antialiased selection:bg-brand-green selection:text-black">
+
+    <!-- Header -->
+    <header class="border-b border-gray-800 bg-brand-bg sticky top-0 z-50">
+        <div class="max-w-[1400px] mx-auto px-4 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Logo (Thay đường dẫn ảnh của bạn vào thuộc tính src bên dưới) -->
+            <a href="TrangChu.html" class="flex items-center gap-2 cursor-pointer group">
+                <img src="images/Camera_Pro.png" alt="DigiCam Logo" class="h-8 md:h-10 w-auto object-contain">
+                <span class="text-xl font-bold tracking-wider hidden sm:block">Camera<span class="text-brand-green">Pro</span></span>
+            </a>
+
+            <!-- Navigation -->
+            <nav id="main-nav" class="hidden absolute top-20 left-0 w-full bg-brand-bg flex-col items-center gap-4 py-6 border-b border-gray-800 z-50 md:static md:w-auto md:bg-transparent md:flex-row md:py-0 md:border-none md:flex md:gap-8 text-sm font-semibold tracking-wide">
+                <a href="TrangChu.html" class="text-gray-400 hover:text-white transition-colors py-2">Trang Chủ</a>
+                <a href="DanhSachSanPham.html" class="text-brand-green border-b-2 border-brand-green py-2">Sản Phẩm</a>
+                <a href="#" class="text-gray-400 hover:text-white transition-colors py-2">Phụ Kiện</a>
+                <a href="#" class="text-gray-400 hover:text-white transition-colors py-2">Tin Tức</a>
+                <a href="#" class="text-gray-400 hover:text-white transition-colors py-2">Hỗ Trợ</a>
+            </nav>
+
+            <!-- Actions (Search, Cart, User) -->
+            <div class="flex items-center gap-2 md:gap-4">
+                <div class="relative hidden lg:block">
+                    <input type="text" placeholder="Tìm kiếm..." class="bg-[#1e1e1e] border border-gray-700 text-sm rounded-full py-2 px-4 pl-10 focus:outline-none focus:border-brand-green transition-colors w-48 focus:w-64">
+                    <i class="ph ph-magnifying-glass absolute left-3 top-2.5 text-gray-400 text-lg"></i>
+                </div>
+                <button id="cart-button" type="button" class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-800 transition-colors relative">
+                    <i class="ph ph-shopping-cart text-xl text-brand-green"></i>
+                    <span class="absolute top-1 right-1 bg-red-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">2</span>
+                </button>
+                <button id="user-button" type="button" class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-800 transition-colors">
+                    <i class="ph ph-user text-xl text-brand-green"></i>
+                </button>
+                <!-- Nút Menu Mobile -->
+                <button id="mobile-menu-btn" class="w-10 h-10 rounded-full flex md:hidden items-center justify-center hover:bg-gray-800 transition-colors">
+                    <i class="ph ph-list text-2xl text-brand-green"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-[1400px] mx-auto px-4 lg:px-8 py-6">
+        
+        <!-- Banner -->
+        <div class="w-full h-[250px] rounded-xl overflow-hidden relative mb-8 group cursor-pointer">
+            <!-- Background Image Placeholder -->
+            <div class="absolute inset-0 bg-gradient-to-r from-purple-900 via-[#1a0b2e] to-black group-hover:scale-105 transition-transform duration-700"></div>
+            
+            <!-- Graphic Elements -->
+            <div class="absolute inset-0 opacity-50 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+            
+            <!-- Camera Images (Đã khôi phục lại ảnh mẫu) -->
+            <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=600&auto=format&fit=crop" alt="Banner Camera 1" class="absolute left-10 top-1/2 -translate-y-1/2 w-64 h-auto object-cover rounded-lg shadow-2xl z-10 group-hover:rotate-2 transition-transform duration-500 opacity-80 mix-blend-screen">
+            <img src="https://images.unsplash.com/photo-1616423640778-28d1b53229bd?q=80&w=600&auto=format&fit=crop" alt="Banner Camera 2" class="absolute left-64 top-1/2 -translate-y-1/2 w-48 h-auto object-cover rounded-lg shadow-2xl z-0 group-hover:-rotate-2 transition-transform duration-500 opacity-60 mix-blend-screen">
+
+            <!-- Banner Content -->
+            <div class="absolute right-10 top-1/2 -translate-y-1/2 text-right z-20">
+                <h2 class="text-4xl md:text-5xl font-bold uppercase tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400 mb-2 drop-shadow-lg">
+                    Nâng tầm khả năng<br>nhiếp ảnh của bạn
+                </h2>
+                <p class="text-gray-300 text-sm md:text-base mb-6">Mua sắm máy ảnh cao cấp và ống kính<br>giá trị tuyệt vời.</p>
+                <button class="bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold py-3 px-8 rounded flex items-center gap-2 ml-auto hover:from-orange-400 hover:to-red-400 transition-all shadow-[0_0_15px_rgba(249,115,22,0.4)] hover:scale-105">
+                    MUA NGAY <i class="ph-bold ph-arrow-right"></i>
+                </button>
+            </div>
+            
+            <!-- Sale Badge -->
+            <div class="absolute top-4 right-4 bg-red-600 text-white font-bold text-xs py-1 px-8 origin-center rotate-45 translate-x-4 -translate-y-1 shadow-lg">
+                GIẢM GIÁ 20%
+            </div>
+        </div>
+
+        <!-- Breadcrumb & Title -->
+        <div class="mb-6">
+            <div class="text-xs text-brand-text-gray mb-2">
+                <a href="#" class="hover:text-brand-green transition-colors">TRANG CHỦ</a> > <span class="text-white">SẢN PHẨM</span>
+            </div>
+            <h1 class="text-3xl font-bold mb-2">Danh Mục Sản Phẩm</h1>
+            <p class="text-brand-text-gray text-sm max-w-2xl">
+                Khám phá bộ sưu tập máy ảnh và ống kính chuyên nghiệp hàng đầu, được tuyển chọn kỹ lưỡng cho những nghệ sĩ nhiếp ảnh thực thụ.
+            </p>
+        </div>
+
+        <!-- Big Search Bar -->
+        <div class="mb-10">
+            <div class="flex flex-col sm:flex-row gap-2 sm:gap-0">
+                <div class="relative flex-1">
+                    <i class="ph ph-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-brand-text-gray text-xl"></i>
+                    <input type="text" id="search-input" placeholder="Bạn đang tìm kiếm máy ảnh, ống kính hay phụ kiện nào?" class="w-full bg-[#1a1a1a] border sm:border-y sm:border-l border-gray-800 text-white py-4 pl-12 pr-4 focus:outline-none focus:border-brand-green transition-colors sm:rounded-l-md rounded-md sm:rounded-r-none">
+                </div>
+                <button id="search-btn" class="bg-brand-green text-black font-bold py-4 sm:py-0 px-8 rounded-md sm:rounded-l-none sm:rounded-r-md hover:bg-brand-green-hover transition-colors">
+                    Tìm kiếm
+                </button>
+            </div>
+            <div class="hidden sm:flex gap-4 mt-3 text-xs text-brand-text-gray items-center">
+                <span>Gợi ý:</span>
+                <a href="#" class="text-brand-green hover:underline">SONY A7 IV</a>
+                <a href="#" class="text-brand-green hover:underline">CANON RF LENSES</a>
+                <a href="#" class="text-brand-green hover:underline">FUJIFILM FILM SIM</a>
+            </div>
+        </div>
+
+        <!-- Main Content Area (Sidebar + Grid) -->
+        <div class="flex flex-col lg:flex-row gap-8">
+            
+            <!-- Mobile Filter Button -->
+            <div class="lg:hidden flex justify-between items-center bg-[#1a1a1a] p-4 rounded-lg border border-gray-800 mb-2">
+                <span class="font-semibold text-white">Tùy chọn hiển thị</span>
+                <button id="mobile-filter-toggle" class="flex items-center gap-2 bg-brand-gray px-4 py-2 rounded text-sm hover:bg-brand-green hover:text-black transition-colors">
+                    <i class="ph ph-faders"></i> Bộ lọc
+                </button>
+            </div>
+
+            <!-- Sidebar (Filters) -->
+            <aside id="filter-sidebar" class="w-full lg:w-64 shrink-0 hidden lg:block">
+                <!-- Filter Group 1: Thương hiệu -->
+                <div class="mb-8">
+                    <h3 class="flex items-center gap-2 text-brand-green font-semibold text-sm mb-4">
+                        <i class="ph-bold ph-caret-down text-brand-green"></i> THƯƠNG HIỆU
+                    </h3>
+                    <div class="flex flex-col gap-3 pl-6">
+                        <label class="flex items-center gap-3 cursor-pointer group text-sm text-gray-300">
+                            <input type="checkbox" value="Sony" class="form-checkbox filter-brand">
+                            <span class="group-hover:text-white transition-colors">Sony</span>
+                        </label>
+                        <label class="flex items-center gap-3 cursor-pointer group text-sm text-gray-300">
+                            <input type="checkbox" value="Canon" class="form-checkbox filter-brand">
+                            <span class="group-hover:text-white transition-colors">Canon</span>
+                        </label>
+                        <label class="flex items-center gap-3 cursor-pointer group text-sm text-gray-300">
+                            <input type="checkbox" value="Fujifilm" class="form-checkbox filter-brand">
+                            <span class="group-hover:text-white transition-colors">Fujifilm</span>
+                        </label>
+                        <label class="flex items-center gap-3 cursor-pointer group text-sm text-gray-300">
+                            <input type="checkbox" value="Nikon" class="form-checkbox filter-brand">
+                            <span class="group-hover:text-white transition-colors">Nikon</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Filter Group 2: Loại thiết bị -->
+                <div class="mb-8">
+                    <h3 class="flex items-center gap-2 text-brand-green font-semibold text-sm mb-4">
+                        <i class="ph-bold ph-caret-down text-brand-green"></i> LOẠI THIẾT BỊ
+                    </h3>
+                    <div class="flex flex-col gap-3 pl-6">
+                        <label class="flex items-center gap-3 cursor-pointer group text-sm text-gray-300">
+                            <input type="checkbox" value="Mirrorless" class="form-checkbox filter-type">
+                            <span class="group-hover:text-white transition-colors">Mirrorless</span>
+                        </label>
+                        <label class="flex items-center gap-3 cursor-pointer group text-sm text-gray-300">
+                            <input type="checkbox" value="DSLR" class="form-checkbox filter-type">
+                            <span class="group-hover:text-white transition-colors">DSLR</span>
+                        </label>
+                        <label class="flex items-center gap-3 cursor-pointer group text-sm text-gray-300">
+                            <input type="checkbox" value="Ống kính" class="form-checkbox filter-type">
+                            <span class="group-hover:text-white transition-colors">Ống kính</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Filter Group 3: Mức giá -->
+                <div class="mb-8">
+                    <h3 class="flex items-center gap-2 text-brand-green font-semibold text-sm mb-4">
+                        <i class="ph-bold ph-caret-down text-brand-green"></i> MỨC GIÁ (VNĐ)
+                    </h3>
+                    <div class="pl-6 pr-2">
+                        <div class="relative w-full h-1 bg-gray-700 rounded mb-6 mt-4">
+                            <!-- Slider track highlight -->
+                            <div id="price-progress" class="absolute left-0 right-0 h-full bg-brand-green rounded"></div>
+                            <input type="range" id="price-slider" min="0" max="150000000" step="1000000" value="150000000" class="absolute -top-[6px] w-full z-10">
+                        </div>
+                        <div class="flex justify-between text-xs text-gray-400 mb-4">
+                            <span>0đ</span>
+                            <span id="price-display">150.000.000đ+</span>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Product Grid Area -->
+            <div class="flex-1">
+                <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                    <!-- Products will be injected here by JavaScript -->
+                </div>
+
+                <!-- Pagination (Sẽ được chèn động bằng JS) -->
+                <div id="pagination-container" class="flex justify-center items-center gap-2 mt-12 mb-8">
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-800 bg-brand-bg pt-12 pb-8 mt-12">
+        <div class="max-w-[1400px] mx-auto px-4 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+                
+                <!-- Brand Info -->
+                <div class="lg:col-span-1">
+                    <div class="flex items-center gap-2 mb-4">
+                        <!-- Logo Footer (Thay đường dẫn ảnh của bạn vào thuộc tính src bên dưới) -->
+                        <img src="images/Camera_Pro.png" alt="DigiCam Logo" class="h-6 w-auto object-contain">
+                        <span class="text-lg font-bold">Camera<span class="text-brand-green">Pro</span></span>
+                    </div>
+                    <p class="text-brand-text-gray text-xs mb-4">
+                        © 2024 CameraPro. Nền tảng bán lẻ máy ảnh chuyên nghiệp.
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="#" class="text-gray-400 hover:text-brand-green transition-colors"><i class="ph-fill ph-facebook-logo text-xl"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-brand-green transition-colors"><i class="ph-fill ph-instagram-logo text-xl"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-brand-green transition-colors"><i class="ph-fill ph-twitter-logo text-xl"></i></a>
+                    </div>
+                </div>
+
+                <!-- Support -->
+                <div>
+                    <h4 class="text-brand-green font-semibold text-sm mb-4">HỖ TRỢ KHÁCH HÀNG</h4>
+                    <ul class="text-brand-text-gray text-xs space-y-3">
+                        <li><a href="#" class="hover:text-white transition-colors">Chính sách bảo hành</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Hướng dẫn mua hàng</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Vận chuyển & Giao nhận</a></li>
+                    </ul>
+                </div>
+
+                <!-- About Us -->
+                <div>
+                    <h4 class="text-brand-green font-semibold text-sm mb-4">VỀ CHÚNG TÔI</h4>
+                    <ul class="text-brand-text-gray text-xs space-y-3">
+                        <li><a href="#" class="hover:text-white transition-colors">Giới thiệu</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Hệ thống cửa hàng</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Câu chuyện thương hiệu</a></li>
+                    </ul>
+                </div>
+
+                <!-- Newsletter -->
+                <div>
+                    <h4 class="text-brand-green font-semibold text-sm mb-4">NEWSLETTER</h4>
+                    <p class="text-brand-text-gray text-xs mb-3">
+                        Đăng ký để nhận tin mới và các chương trình khuyến mãi đặc biệt.
+                    </p>
+                    <div class="flex bg-[#1a1a1a] rounded overflow-hidden border border-gray-800">
+                        <input type="email" placeholder="Email của bạn" class="bg-transparent text-white text-xs py-2 px-3 w-full focus:outline-none">
+                        <button class="bg-brand-green text-black px-3 hover:bg-brand-green-hover transition-colors flex items-center justify-center">
+                            <i class="ph-bold ph-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </footer>
+
+    <!-- Script Xử Lý Logic Lọc & Hiển Thị Sản Phẩm -->
+    <script>
+        // Dữ liệu sản phẩm (Thay đường dẫn ảnh của bạn vào trường "image" bên dưới)
+        const productsData = [
+            { id: 1, name: "Sony Alpha A7 IV Mirrorless", brand: "Sony", type: "Mirrorless", price: 58990000, rating: 4.9, image: "images/may-anh-sony-a7-iv.png", isSale: true, originalPrice: 65000000 },
+            { id: 2, name: "Canon EOS R6 Full-Frame", brand: "Canon", type: "Mirrorless", price: 62500000, rating: 4.8, image: "images/CanonEOSR5.png", isSale: false },
+            { id: 3, name: "Fujifilm X-T4 Silver Edition", brand: "Fujifilm", type: "Mirrorless", price: 38900000, rating: 4.7, image: "images/fujifilm-x-t4.png", isSale: false },
+            { id: 4, name: "Nikon Z9 Flagship Camera", brand: "Nikon", type: "Mirrorless", price: 125000000, rating: 5.0, image: "images/NikonZ9FlagshipCamera.png", isSale: false },
+            { id: 5, name: "Sony FE 50mm f/1.2 GM", brand: "Sony", type: "Ống kính", price: 45990000, rating: 4.9, image: "images/sony-fe-50mm-f12-gm-1.png", isSale: true, originalPrice: 50000000 },
+            { id: 6, name: "Canon RF 85mm f/1.2L USM", brand: "Canon", type: "Ống kính", price: 68500000, rating: 5.0, image: "images/CanonRF85mmf-1.2LUSM.png", isSale: false },
+            { id: 7, name: "Fujifilm GFX 100S Medium Format", brand: "Fujifilm", type: "Mirrorless", price: 149000000, rating: 4.9, image: "images/FujifilmGFX100SMediumFor.png", isSale: false },
+            { id: 8, name: "Nikon D850 Professional DSLR", brand: "Nikon", type: "DSLR", price: 62000000, rating: 4.8, image: "images/NikonD850ProfessionalDSLR.png", isSale: false },
+            { id: 9, name: "Sony FE 24-70mm f/2.8 GM II", brand: "Sony", type: "Ống kính", price: 49990000, rating: 5.0, image: "images/sony-fe-24-70mm-f-2.8-gm-ii.png", isSale: false },
+            { id: 10, name: "Canon EOS 5D Mark IV", brand: "Canon", type: "DSLR", price: 55000000, rating: 4.7, image: "images/CanonEOS5DMarkIV.png", isSale: false },
+            { id: 11, name: "Fujifilm XF 35mm f/1.4 R", brand: "Fujifilm", type: "Ống kính", price: 12500000, rating: 4.8, image: "images/FujifilmXF35mmf-1.4R.png", isSale: true, originalPrice: 14000000 },
+            { id: 12, name: "Nikon Z6 II Mirrorless", brand: "Nikon", type: "Mirrorless", price: 45000000, rating: 4.8, image: "images/NikonZ6IIMirrorless.png", isSale: false },
+            { id: 13, name: "Sony Alpha A6700", brand: "Sony", type: "Mirrorless", price: 35000000, rating: 4.8, image: "images/sony-alpha-a6700.png", isSale: false },
+            { id: 14, name: "Canon EOS R5 Professional", brand: "Canon", type: "Mirrorless", price: 85000000, rating: 4.9, image: "images/CanonEOSR5Professional.png", isSale: true, originalPrice: 95000000 },
+            { id: 15, name: "Fujifilm X-H2S", brand: "Fujifilm", type: "Mirrorless", price: 55000000, rating: 4.8, image: "images/fujifilm-x-h2s.png", isSale: false },
+            { id: 16, name: "Nikon Z7 II", brand: "Nikon", type: "Mirrorless", price: 70000000, rating: 4.9, image: "images/NikonZ7II.png", isSale: false },
+            { id: 17, name: "Sony E 35mm f/1.8 OSS", brand: "Sony", type: "Ống kính", price: 9500000, rating: 4.7, image: "images/sony-e-35mm-f-1.8-oss.png", isSale: true, originalPrice: 11000000 },
+            { id: 18, name: "Canon EF 70-200mm f/2.8L", brand: "Canon", type: "Ống kính", price: 42000000, rating: 5.0, image: "images/CanonEF70-200mmf-2.8L.png", isSale: false }
+        ];
+
+        // Khai báo biến
+        const productGrid = document.getElementById('product-grid');
+        const paginationContainer = document.getElementById('pagination-container');
+        const searchInput = document.getElementById('search-input');
+        const searchBtn = document.getElementById('search-btn');
+        const brandFilters = document.querySelectorAll('.filter-brand');
+        const typeFilters = document.querySelectorAll('.filter-type');
+        const priceSlider = document.getElementById('price-slider');
+        const priceDisplay = document.getElementById('price-display');
+        const priceProgress = document.getElementById('price-progress');
+        
+        // Element cho Mobile
+        const mobileFilterToggle = document.getElementById('mobile-filter-toggle');
+        const filterSidebar = document.getElementById('filter-sidebar');
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mainNav = document.getElementById('main-nav');
+
+        // Logic toggle sidebar trên mobile
+        if(mobileFilterToggle && filterSidebar) {
+            mobileFilterToggle.addEventListener('click', () => {
+                filterSidebar.classList.toggle('hidden');
+            });
+        }
+
+        // Logic toggle menu header trên mobile
+        if(mobileMenuBtn && mainNav) {
+            mobileMenuBtn.addEventListener('click', () => {
+                mainNav.classList.toggle('hidden');
+                mainNav.classList.toggle('flex');
+            });
+        }
+
+        // Trạng thái phân trang
+        let currentPage = 1;
+        const itemsPerPage = 6;
+        let currentFilteredProducts = [...productsData];
+
+        // Hàm định dạng tiền VNĐ
+        function formatPrice(price) {
+            return price.toLocaleString('vi-VN') + 'đ';
+        }
+
+        // Render HTML sản phẩm (chỉ render mảng được truyền vào)
+        function renderProductsHTML(productsToRender) {
+            if (productsToRender.length === 0) {
+                productGrid.innerHTML = '<div class="col-span-full flex flex-col items-center justify-center py-16 text-brand-text-gray"><i class="ph ph-magnifying-glass text-4xl mb-3"></i><p>Không tìm thấy sản phẩm nào phù hợp với bộ lọc của bạn.</p></div>';
+                return;
+            }
+
+            const html = productsToRender.map(product => `
+                <div class="bg-brand-card rounded-lg overflow-hidden group hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(0,255,0,0.15)] transition-all duration-300 border border-gray-900 flex flex-col relative">
+                    ${product.isSale ? '<div class="absolute top-3 left-3 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded z-10">SALE</div>' : ''}
+                    <div class="h-56 bg-gradient-to-b from-[#2a2a2a] to-[#1a1a1a] p-4 flex items-center justify-center overflow-hidden">
+                        <img src="${product.image}" alt="${product.name}" class="h-[85%] object-contain group-hover:scale-110 transition-transform duration-500 drop-shadow-2xl">
+                    </div>
+                    <div class="p-5 flex flex-col flex-1">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-semibold text-base line-clamp-2 pr-2">${product.name}</h3>
+                            <div class="flex items-center gap-1 text-brand-green text-sm shrink-0">
+                                <i class="ph-fill ph-star"></i>
+                                <span>${product.rating.toFixed(1)}</span>
+                            </div>
+                        </div>
+                        <div class="mt-auto mb-4">
+                            <div class="text-brand-green font-bold text-lg">
+                                ${formatPrice(product.price)}
+                            </div>
+                        </div>
+                        <button type="button" data-action="add-cart" data-product-id="${product.id}" class="btn-add-cart w-full bg-brand-green text-black font-semibold py-2.5 rounded mb-2 hover:bg-brand-green-hover transition-colors">
+                            THÊM VÀO GIỎ
+                        </button>
+                        <button type="button" data-action="view-detail" data-product-id="${product.id}" class="btn-view-details w-full text-blue-600 hover:text-blue-400 font-medium text-sm py-2 transition-colors">
+                            XEM CHI TIẾT
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            productGrid.innerHTML = html;
+        }
+
+        // Render cấu trúc nút Phân Trang
+        function renderPagination(totalItems) {
+            const totalPages = Math.ceil(totalItems / itemsPerPage);
+            
+            if (totalPages <= 1) {
+                paginationContainer.innerHTML = '';
+                return;
+            }
+
+            let html = '';
+            
+            // Nút Lùi
+            const prevDisabled = currentPage === 1 ? 'opacity-50 cursor-not-allowed pointer-events-none' : 'hover:text-white hover:bg-gray-800';
+            html += `<button data-page="${currentPage - 1}" class="w-8 h-8 flex items-center justify-center text-gray-400 rounded transition-colors ${prevDisabled}"><i class="ph-bold ph-caret-left"></i></button>`;
+
+            // Các nút Số trang
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === currentPage) {
+                    html += `<button class="w-8 h-8 flex items-center justify-center bg-brand-green text-black rounded font-bold">${i}</button>`;
+                } else {
+                    html += `<button data-page="${i}" class="w-8 h-8 flex items-center justify-center text-gray-400 hover:bg-gray-800 hover:text-white rounded transition-colors">${i}</button>`;
+                }
+            }
+
+            // Nút Tiến
+            const nextDisabled = currentPage === totalPages ? 'opacity-50 cursor-not-allowed pointer-events-none' : 'hover:text-white hover:bg-gray-800';
+            html += `<button data-page="${currentPage + 1}" class="w-8 h-8 flex items-center justify-center text-gray-400 rounded transition-colors ${nextDisabled}"><i class="ph-bold ph-caret-right"></i></button>`;
+
+            paginationContainer.innerHTML = html;
+        }
+
+        // Cập nhật giao diện: cắt mảng sản phẩm tương ứng với trang và render
+        function updateDisplay() {
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const slicedProducts = currentFilteredProducts.slice(startIndex, endIndex);
+            
+            renderProductsHTML(slicedProducts);
+            renderPagination(currentFilteredProducts.length);
+        }
+
+        // Lọc sản phẩm tổng hợp (Tìm kiếm, Checkbox, Mức Giá)
+        function filterProducts() {
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            const selectedBrands = Array.from(brandFilters).filter(cb => cb.checked).map(cb => cb.value);
+            const selectedTypes = Array.from(typeFilters).filter(cb => cb.checked).map(cb => cb.value);
+            const maxPrice = parseInt(priceSlider.value);
+
+            currentFilteredProducts = productsData.filter(product => {
+                const matchSearch = product.name.toLowerCase().includes(searchTerm) || product.brand.toLowerCase().includes(searchTerm);
+                const matchBrand = selectedBrands.length === 0 || selectedBrands.includes(product.brand);
+                const matchType = selectedTypes.length === 0 || selectedTypes.includes(product.type);
+                const matchPrice = product.price <= maxPrice;
+
+                return matchSearch && matchBrand && matchType && matchPrice;
+            });
+
+            // Reset về trang 1 khi áp dụng bộ lọc mới
+            currentPage = 1; 
+            updateDisplay();
+        }
+
+        // Lắng nghe sự kiện click vào các nút Phân Trang
+        paginationContainer.addEventListener('click', (e) => {
+            const btn = e.target.closest('button[data-page]');
+            if (btn) {
+                const newPage = parseInt(btn.getAttribute('data-page'));
+                if (newPage && newPage !== currentPage) {
+                    currentPage = newPage;
+                    updateDisplay();
+                    
+                    // Tự động trượt lên đầu khu vực Grid sản phẩm khi đổi trang
+                    document.getElementById('product-grid').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }
+        });
+
+        // Gán sự kiện cho Bộ lọc
+        searchInput.addEventListener('input', filterProducts);
+        searchBtn.addEventListener('click', filterProducts);
+        
+        brandFilters.forEach(cb => cb.addEventListener('change', filterProducts));
+        typeFilters.forEach(cb => cb.addEventListener('change', filterProducts));
+
+        priceSlider.addEventListener('input', (e) => {
+            const val = parseInt(e.target.value);
+            priceDisplay.textContent = formatPrice(val) + (val === 150000000 ? '+' : '');
+            
+            const percentage = (val / 150000000) * 100;
+            priceProgress.style.right = (100 - percentage) + '%';
+            
+            filterProducts();
+        });
+
+        // Hiệu ứng chuyển trang
+        const transitionDelay = 500;
+        function navigateWithFade(url) {
+            document.body.classList.add('fade-out');
+            setTimeout(() => {
+                window.location.href = url;
+            }, transitionDelay);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.body.classList.add('loaded');
+
+            document.querySelectorAll('a[href]').forEach(link => {
+                const href = link.getAttribute('href');
+                if (href && href !== '#' && !href.startsWith('javascript:') && !href.startsWith('mailto:') && !href.startsWith('tel:')) {
+                    link.addEventListener('click', function(event) {
+                        event.preventDefault();
+                        navigateWithFade(this.href);
+                    });
+                }
+            });
+
+            const cartButton = document.getElementById('cart-button');
+            const userButton = document.getElementById('user-button');
+
+            if (cartButton) {
+                cartButton.addEventListener('click', () => navigateWithFade('GioHang.html'));
+            }
+            if (userButton) {
+                userButton.addEventListener('click', () => navigateWithFade('DangNhap.html'));
+            }
+
+            productGrid.addEventListener('click', (e) => {
+                const btn = e.target.closest('[data-action]');
+                if (btn) {
+                    const action = btn.getAttribute('data-action');
+                    if (action === 'add-cart') {
+                        navigateWithFade('GioHang.html');
+                    }
+                    if (action === 'view-detail') {
+                        navigateWithFade('ChiTietSanPham.html');
+                    }
+                }
+            });
+        });
+
+        // Khởi tạo ban đầu
+        filterProducts();
+    </script>
+</body>
+</html>

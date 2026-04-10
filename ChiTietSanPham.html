@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sony Alpha A7 IV - CameraPro</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        neon: '#00ff00',
+                        darkBg: '#09090a',
+                        cardBg: '#121214',
+                        surface: '#1c1c1f'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #09090a;
+            color: #e4e4e7;
+        }
+        
+        /* Custom scrollbar for dark theme */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #09090a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #27272a;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3f3f46;
+        }
+
+        /* Hide number input arrows */
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        body {
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        body.loaded {
+            opacity: 1;
+        }
+
+        body.fade-out {
+            opacity: 0;
+        }
+        
+        .tab-active {
+            border-bottom: 2px solid #00ff00;
+            color: white;
+        }
+        
+        .thumb-active {
+            border: 2px solid #00ff00;
+        }
+    </style>
+</head>
+<body class="antialiased font-sans flex flex-col min-h-screen">
+
+    <!-- Header -->
+    <header class="border-b border-gray-800 bg-darkBg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <a href="TrangChu.html" class="flex-shrink-0 flex items-center gap-2 cursor-pointer transition-transform hover:scale-105">
+                    <!-- Thêm đường dẫn ảnh logo của bạn vào thuộc tính src bên dưới -->
+                    <img src="images/Camera_Pro.png" alt="Logo" class="h-8 w-auto object-contain">
+                    <span class="font-bold text-lg tracking-wider text-white">Camera<span class="text-neon">Pro</span></span>
+                </a>
+
+                <!-- Desktop Nav -->
+                <nav class="hidden md:flex space-x-8">
+                    <a href="TrangChu.html" class="text-gray-400 hover:text-neon text-sm font-medium uppercase tracking-wider transition-colors duration-300">Trang Chủ</a>
+                    <a href="DanhSachSanPham.html" class="text-gray-400 hover:text-neon text-sm font-medium uppercase tracking-wider transition-colors duration-300">Sản Phẩm</a>
+                    <a href="#" class="text-gray-400 hover:text-neon text-sm font-medium uppercase tracking-wider transition-colors duration-300">Phụ Kiện</a>
+                    <a href="#" class="text-gray-400 hover:text-neon text-sm font-medium uppercase tracking-wider transition-colors duration-300">Tin Tức</a>
+                    <a href="#" class="text-gray-400 hover:text-neon text-sm font-medium uppercase tracking-wider transition-colors duration-300">Hỗ Trợ</a>
+                </nav>
+
+                <!-- Icons & Search -->
+                <div class="hidden md:flex items-center space-x-6">
+                    <div class="relative group">
+                        <input type="text" placeholder="Tìm kiếm..." class="bg-surface text-gray-300 text-sm rounded-full py-2 pl-4 pr-10 focus:outline-none focus:ring-1 focus:ring-neon transition-all w-48 group-hover:w-56 placeholder-gray-600">
+                        <i class="fa-solid fa-search absolute right-3 top-2.5 text-gray-500 group-hover:text-neon transition-colors"></i>
+                    </div>
+                    <a href="GioHang.html" id="cart-link" class="text-gray-400 hover:text-neon transition-colors duration-300 relative">
+                        <i class="fa-solid fa-cart-shopping text-xl"></i>
+                        <span class="absolute -top-1 -right-2 bg-neon text-black text-[10px] font-bold px-1.5 py-0.5 rounded-full">2</span>
+                    </a>
+                    <a href="DangNhap.html" id="user-link" class="text-gray-400 hover:text-neon transition-colors duration-300">
+                        <i class="fa-regular fa-user text-xl"></i>
+                    </a>
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="flex items-center md:hidden gap-4">                    
+                    <a href="DangNhap.html" class="text-gray-400 hover:text-neon transition-colors duration-300">
+                        <i class="fa-regular fa-user text-xl"></i>
+                    </a>
+                    <a href="GioHang.html" class="text-gray-400 hover:text-neon relative">
+                        <i class="fa-solid fa-cart-shopping text-xl"></i>
+                        <span class="absolute -top-1 -right-2 bg-neon text-black text-[10px] font-bold px-1.5 py-0.5 rounded-full">2</span>
+                    </a>
+                    <button id="mobile-menu-btn" class="text-gray-400 hover:text-white focus:outline-none ml-2">
+                        <i class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu Panel (Hidden by default) -->
+        <div id="mobile-menu" class="hidden md:hidden bg-cardBg border-b border-gray-800 absolute w-full">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <input type="text" placeholder="Tìm kiếm..." class="w-full bg-dark text-sm text-white rounded-full pl-4 pr-10 py-3 focus:outline-none focus:border-primary border border-borderDark transition-all">
+                <a href="TrangChu.html" class="block px-3 py-2 text-base font-medium text-gray-400 hover:text-white hover:bg-surface rounded-md transition-colors">Trang Chủ</a>
+                <a href="DanhSachSanPham.html" class="block px-3 py-2 text-base font-medium text-white bg-surface rounded-md text-neon">Sản Phẩm</a>
+                <a href="#" class="block px-3 py-2 text-base font-medium text-gray-400 hover:text-white hover:bg-surface rounded-md transition-colors">Phụ Kiện</a>
+                <a href="#" class="block px-3 py-2 text-base font-medium text-gray-400 hover:text-white hover:bg-surface rounded-md transition-colors">Tin Tức</a>
+                <a href="#" class="block px-3 py-2 text-base font-medium text-gray-400 hover:text-white hover:bg-surface rounded-md transition-colors">Hỗ Trợ</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+        
+        <!-- Breadcrumb -->
+        <nav class="flex text-xs text-gray-500 mb-8 uppercase tracking-wider font-medium">
+            <a href="#" class="hover:text-neon transition-colors">Trang chủ</a>
+            <span class="mx-2">&gt;</span>
+            <a href="#" class="hover:text-neon transition-colors">Sản Phẩm</a>
+            <span class="mx-2">&gt;</span>
+            <span class="text-gray-300">Sony Alpha A7 IV</span>
+        </nav>
+
+        <!-- Product Top Section -->
+        <div class="flex flex-col lg:flex-row gap-12">
+            
+            <!-- Product Images (Left) -->
+            <div class="w-full lg:w-1/2">
+                <!-- Main Image -->
+                <div class="bg-cardBg rounded-lg aspect-[4/3] flex items-center justify-center p-8 relative overflow-hidden group">
+                    <!-- Accent corner element -->
+                    <div class="absolute top-4 left-4 w-4 h-4 border-t-2 border-l-2 border-neon"></div>
+                    
+                    <img id="main-image" src="images/may-anh-sony-a7-iv.png" alt="Sony Alpha A7 IV" class="w-full h-full object-contain drop-shadow-[0_20px_30px_rgba(0,0,0,0.5)] transition-transform duration-500 group-hover:scale-105">
+                </div>
+                
+                <!-- Thumbnails -->
+                <div class="flex gap-4 mt-4 overflow-x-auto pb-2">
+                    <button class="thumb-btn thumb-active flex-shrink-0 w-20 h-20 bg-cardBg rounded-md overflow-hidden transition-all hover:border-neon focus:outline-none" data-src="images/may-anh-sony-a7-iv.png">
+                        <img src="images/may-anh-sony-a7-iv.png" class="w-full h-full object-cover opacity-80 hover:opacity-100" alt="Thumb 1">
+                    </button>
+                    <button class="thumb-btn border border-gray-800 flex-shrink-0 w-20 h-20 bg-cardBg rounded-md overflow-hidden transition-all hover:border-neon focus:outline-none" data-src="images/SonyAlphaA7IV2.png">
+                        <img src="images/SonyAlphaA7IV2.png" class="w-full h-full object-cover opacity-60 hover:opacity-100" alt="Thumb 2">
+                    </button>
+                    <button class="thumb-btn border border-gray-800 flex-shrink-0 w-20 h-20 bg-cardBg rounded-md overflow-hidden transition-all hover:border-neon focus:outline-none" data-src="images/SonyAlphaA7IV3.png">
+                        <img src="images/SonyAlphaA7IV3.png" class="w-full h-full object-cover opacity-60 hover:opacity-100" alt="Thumb 3">
+                    </button>
+                    <button class="thumb-btn border border-gray-800 flex-shrink-0 w-20 h-20 bg-cardBg rounded-md overflow-hidden transition-all hover:border-neon focus:outline-none" data-src="images/SonyAlphaA7IV4.png">
+                        <img src="images/SonyAlphaA7IV4.png" class="w-full h-full object-cover opacity-60 hover:opacity-100" alt="Thumb 4">
+                    </button>
+                </div>
+            </div>
+
+            <!-- Product Info (Right) -->
+            <div class="w-full lg:w-1/2 flex flex-col pt-2">
+                <span class="text-neon text-xs font-bold uppercase tracking-[0.2em] mb-2">Full-Frame Mirrorless</span>
+                <h1 class="text-3xl md:text-5xl font-light text-white mb-2 uppercase tracking-wide">Sony Alpha A7 IV <br><span class="text-xl md:text-2xl text-gray-400 normal-case mt-1 block">Mirrorless Camera</span></h1>
+                
+                <!-- Rating -->
+                <div class="flex items-center gap-2 mb-6">
+                    <div class="flex text-neon text-sm">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                    <span class="text-gray-500 text-sm">(120 Đánh giá)</span>
+                </div>
+
+                <!-- Price & Stock -->
+                <div class="mb-8">
+                    <div class="text-4xl font-bold text-neon mb-2">58.990.000đ</div>
+                    <div class="flex items-center gap-2 text-sm">
+                        <div class="w-2 h-2 rounded-full bg-neon animate-pulse"></div>
+                        <span class="text-neon font-medium">CÒN HÀNG</span>
+                    </div>
+                </div>
+
+                <!-- Description Snippet -->
+                <p class="text-gray-400 text-sm leading-relaxed mb-6">
+                    Định nghĩa lại các tiêu chuẩn cho máy ảnh Full-frame với cảm biến CMOS Exmor R 33MP mới nhất, hệ thống AF thời gian thực và khả năng quay video 4K 60p 10-bit.
+                </p>
+
+                <!-- Key Features List -->
+                <ul class="space-y-3 mb-10 text-sm text-gray-300">
+                    <li class="flex items-start gap-3">
+                        <i class="fa-regular fa-circle-check text-neon mt-0.5"></i>
+                        <span>Cảm biến CMOS Exmor R 33MP</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <i class="fa-regular fa-circle-check text-neon mt-0.5"></i>
+                        <span>Chíp xử lý BIONZ XR thế hệ mới</span>
+                    </li>
+                </ul>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-col sm:flex-row gap-4 mt-auto">
+                    <button type="button" data-action="add-cart" class="flex-1 border border-neon text-neon py-4 rounded font-bold uppercase tracking-wider text-sm hover:bg-neon hover:text-black transition-all duration-300 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-cart-plus"></i> Thêm vào giỏ
+                    </button>
+                    <button type="button" data-action="buy-now" class="flex-1 bg-neon text-black py-4 rounded font-bold uppercase tracking-wider text-sm hover:bg-green-400 hover:shadow-[0_0_20px_rgba(0,255,0,0.4)] transition-all duration-300 flex items-center justify-center gap-2">
+                        Mua ngay
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Details Section -->
+        <div class="mt-20">
+            <!-- Tabs -->
+            <div class="flex border-b border-gray-800 mb-8 overflow-x-auto">
+                <button class="tab-btn tab-active px-8 py-4 text-sm font-medium uppercase tracking-wider whitespace-nowrap transition-colors hover:text-white" data-target="tab-desc">
+                    Mô tả sản phẩm
+                </button>
+                <button class="tab-btn px-8 py-4 text-sm font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap transition-colors hover:text-white" data-target="tab-specs">
+                    Thông số kỹ thuật
+                </button>
+                <button class="tab-btn px-8 py-4 text-sm font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap transition-colors hover:text-white" data-target="tab-reviews">
+                    Đánh giá
+                </button>
+            </div>
+
+            <!-- Tab Content Area -->
+            <div id="tab-desc" class="tab-content grid grid-cols-1 lg:grid-cols-3 gap-12">
+                <!-- Main Description -->
+                <div class="lg:col-span-2">
+                    <h3 class="text-2xl font-bold text-white mb-4 uppercase tracking-wide">Một trải nghiệm hình ảnh hoàn toàn mới</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-8">
+                        Sony A7 IV mang đến hiệu năng vượt trội cho cả chụp ảnh tĩnh và quay video. Với cảm biến Exmor R CMOS 33MP mới, phạm vi ISO rộng từ 100-51200 và dải động lên đến 15 stops, thiết bị này sẵn sàng thách thức mọi điều kiện ánh sáng.
+                    </p>
+                    
+                    <!-- Feature Image -->
+                    <div class="w-full bg-cardBg rounded-lg overflow-hidden border border-gray-800 relative group">
+                        <img src="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Feature detail" class="w-full h-auto object-cover opacity-70 group-hover:opacity-100 transition-opacity duration-500">
+                        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                            <h4 class="text-4xl md:text-6xl text-white font-light opacity-50 italic font-serif tracking-widest drop-shadow-lg">Feature Detail</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Specs Box -->
+                <div class="lg:col-span-1">
+                    <div class="bg-cardBg border border-gray-800 rounded-lg p-6 sticky top-28">
+                        <h4 class="text-neon text-sm font-bold uppercase tracking-widest mb-6">Thông số nhanh</h4>
+                        <div class="space-y-4 text-sm">
+                            <div class="flex justify-between border-b border-gray-800 pb-2">
+                                <span class="text-gray-500">CẢM BIẾN</span>
+                                <span class="text-gray-200 text-right">33MP Full-Frame</span>
+                            </div>
+                            <div class="flex justify-between border-b border-gray-800 pb-2">
+                                <span class="text-gray-500">LẤY NÉT</span>
+                                <span class="text-gray-200 text-right">759 điểm AF</span>
+                            </div>
+                            <div class="flex justify-between border-b border-gray-800 pb-2">
+                                <span class="text-gray-500">QUAY PHIM</span>
+                                <span class="text-gray-200 text-right">4K 60p 10-bit</span>
+                            </div>
+                            <div class="flex justify-between pb-2">
+                                <span class="text-gray-500">ISO</span>
+                                <span class="text-gray-200 text-right">100 - 51200</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="tab-specs" class="tab-content hidden text-gray-400">
+                <p>Nội dung thông số kỹ thuật chi tiết sẽ hiển thị ở đây...</p>
+            </div>
+            <div id="tab-reviews" class="tab-content hidden text-gray-400">
+                <p>Phần đánh giá của khách hàng sẽ hiển thị ở đây...</p>
+            </div>
+        </div>
+
+        <!-- Related Products -->
+        <div class="mt-24 mb-12">
+            <div class="flex justify-between items-end mb-8 border-b border-gray-800 pb-4">
+                <h3 class="text-xl md:text-2xl font-bold text-white uppercase tracking-wide">Sản phẩm tương tự</h3>
+                <a href="#" class="text-neon text-xs font-bold uppercase tracking-wider hover:text-white transition-colors flex items-center gap-1">
+                    Xem tất cả <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                </a>
+            </div>
+
+            <!-- Product Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Card 1 -->
+                <div class="group bg-cardBg border border-gray-800 rounded-lg p-5 transition-all duration-300 hover:-translate-y-2 hover:border-neon hover:shadow-[0_0_15px_rgba(0,255,0,0.15)] flex flex-col cursor-pointer">
+                    <div class="aspect-square mb-6 bg-surface rounded flex items-center justify-center p-4 overflow-hidden relative">
+                        <!-- Quick view overlay on hover -->
+                        <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+                            <span class="bg-neon text-black text-xs font-bold px-4 py-2 rounded uppercase tracking-wider">Xem nhanh</span>
+                        </div>
+                        <img src="images/CanonEOSR6.png" alt="Canon EOS R6" class="w-full h-full object-contain filter drop-shadow-lg group-hover:scale-110 transition-transform duration-500">
+                    </div>
+                    <div class="mt-auto">
+                        <span class="text-gray-600 text-[10px] uppercase tracking-widest font-bold">Mirrorless</span>
+                        <h4 class="text-white font-medium text-sm mt-1 mb-3 group-hover:text-neon transition-colors">CANON EOS R6 MARK II</h4>
+                        <div class="text-neon font-bold text-lg">62.500.000đ</div>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="group bg-cardBg border border-gray-800 rounded-lg p-5 transition-all duration-300 hover:-translate-y-2 hover:border-neon hover:shadow-[0_0_15px_rgba(0,255,0,0.15)] flex flex-col cursor-pointer">
+                    <div class="aspect-square mb-6 bg-surface rounded flex items-center justify-center p-4 overflow-hidden relative">
+                        <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+                            <span class="bg-neon text-black text-xs font-bold px-4 py-2 rounded uppercase tracking-wider">Xem nhanh</span>
+                        </div>
+                        <img src="images/NikonZ6IIMirrorless.png" alt="Nikon Z6 II" class="w-full h-full object-contain filter drop-shadow-lg group-hover:scale-110 transition-transform duration-500">
+                    </div>
+                    <div class="mt-auto">
+                        <span class="text-gray-600 text-[10px] uppercase tracking-widest font-bold">Mirrorless</span>
+                        <h4 class="text-white font-medium text-sm mt-1 mb-3 group-hover:text-neon transition-colors">NIKON Z6 II BODY</h4>
+                        <div class="text-neon font-bold text-lg">45.990.000đ</div>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="group bg-cardBg border border-gray-800 rounded-lg p-5 transition-all duration-300 hover:-translate-y-2 hover:border-neon hover:shadow-[0_0_15px_rgba(0,255,0,0.15)] flex flex-col cursor-pointer">
+                    <div class="aspect-square mb-6 bg-surface rounded flex items-center justify-center p-4 overflow-hidden relative">
+                        <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+                            <span class="bg-neon text-black text-xs font-bold px-4 py-2 rounded uppercase tracking-wider">Xem nhanh</span>
+                        </div>
+                        <img src="images/fujifilm-x-t4.png" alt="Fujifilm X-T4" class="w-full h-full object-contain filter drop-shadow-lg group-hover:scale-110 transition-transform duration-500">
+                    </div>
+                    <div class="mt-auto">
+                        <span class="text-gray-600 text-[10px] uppercase tracking-widest font-bold">Mirrorless</span>
+                        <h4 class="text-white font-medium text-sm mt-1 mb-3 group-hover:text-neon transition-colors">FUJIFILM X-T4 BODY</h4>
+                        <div class="text-neon font-bold text-lg">38.900.000đ</div>
+                    </div>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="group bg-cardBg border border-gray-800 rounded-lg p-5 transition-all duration-300 hover:-translate-y-2 hover:border-neon hover:shadow-[0_0_15px_rgba(0,255,0,0.15)] flex flex-col cursor-pointer">
+                    <div class="aspect-square mb-6 bg-surface rounded flex items-center justify-center p-4 overflow-hidden relative">
+                        <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+                            <span class="bg-neon text-black text-xs font-bold px-4 py-2 rounded uppercase tracking-wider">Xem nhanh</span>
+                        </div>
+                        <img src="images/SonyAlphaA7RV.png" alt="Sony Alpha A7R V" class="w-full h-full object-contain filter drop-shadow-lg group-hover:scale-110 transition-transform duration-500">
+                    </div>
+                    <div class="mt-auto">
+                        <span class="text-gray-600 text-[10px] uppercase tracking-widest font-bold">Mirrorless</span>
+                        <h4 class="text-white font-medium text-sm mt-1 mb-3 group-hover:text-neon transition-colors">SONY ALPHA A7R V</h4>
+                        <div class="text-neon font-bold text-lg">89.900.000đ</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-cardBg border-t border-gray-800 pt-16 pb-8 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
+                <!-- Branding -->
+                <div>
+                    <h2 class="text-white font-black text-xl tracking-wider mb-6">Camera<span class="text-neon">Pro</span></h2>
+                    <p class="text-gray-500 text-xs leading-relaxed mb-6">
+                        © 2024 QUANG MAC. ĐIỀU KHIỂN ÁNH SÁNG.<br>
+                        CUNG CẤP THIẾT BỊ QUANG HỌC CHUYÊN NGHIỆP TẠI VIỆT NAM.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-8 h-8 rounded-full border border-gray-700 flex items-center justify-center text-gray-400 hover:text-neon hover:border-neon transition-colors">
+                            <i class="fa-brands fa-facebook-f text-sm"></i>
+                        </a>
+                        <a href="#" class="w-8 h-8 rounded-full border border-gray-700 flex items-center justify-center text-gray-400 hover:text-neon hover:border-neon transition-colors">
+                            <i class="fa-brands fa-youtube text-sm"></i>
+                        </a>
+                        <a href="#" class="w-8 h-8 rounded-full border border-gray-700 flex items-center justify-center text-gray-400 hover:text-neon hover:border-neon transition-colors">
+                            <i class="fa-brands fa-instagram text-sm"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Services -->
+                <div>
+                    <h4 class="text-neon text-xs font-bold uppercase tracking-widest mb-6">Dịch vụ</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-gray-400 text-sm hover:text-white transition-colors">Chính sách bảo hành</a></li>
+                        <li><a href="#" class="text-gray-400 text-sm hover:text-white transition-colors">Hỗ trợ kỹ thuật</a></li>
+                    </ul>
+                </div>
+
+                <!-- Company -->
+                <div>
+                    <h4 class="text-neon text-xs font-bold uppercase tracking-widest mb-6">Công ty</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-gray-400 text-sm hover:text-white transition-colors">Giao hàng</a></li>
+                        <li><a href="#" class="text-gray-400 text-sm hover:text-white transition-colors">Liên hệ</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Interactive Scripts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.body.classList.add('loaded');
+            // Mobile Menu Toggle
+            const btn = document.getElementById('mobile-menu-btn');
+            const menu = document.getElementById('mobile-menu');
+            
+            btn.addEventListener('click', () => {
+                menu.classList.toggle('hidden');
+            });
+
+            // Image Gallery Thumbnails
+            const mainImage = document.getElementById('main-image');
+            const thumbnails = document.querySelectorAll('.thumb-btn');
+
+            thumbnails.forEach(thumb => {
+                thumb.addEventListener('click', function() {
+                    // Remove active class from all
+                    thumbnails.forEach(t => {
+                        t.classList.remove('thumb-active');
+                        t.classList.add('border-gray-800');
+                    });
+                    
+                    // Add active class to clicked
+                    this.classList.add('thumb-active');
+                    this.classList.remove('border-gray-800');
+                    
+                    // Add a quick fade effect
+                    mainImage.style.opacity = 0.5;
+                    
+                    setTimeout(() => {
+                        // Change source
+                        mainImage.src = this.getAttribute('data-src');
+                        mainImage.style.opacity = 1;
+                    }, 150);
+                });
+            });
+
+            // Tabs Logic
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Remove active state from all buttons
+                    tabBtns.forEach(b => {
+                        b.classList.remove('tab-active');
+                        b.classList.add('text-gray-500');
+                    });
+
+                    // Add active state to clicked button
+                    btn.classList.add('tab-active');
+                    btn.classList.remove('text-gray-500');
+
+                    // Hide all contents
+                    tabContents.forEach(content => {
+                        content.classList.add('hidden');
+                    });
+
+                    // Show target content
+                    const targetId = btn.getAttribute('data-target');
+                    document.getElementById(targetId).classList.remove('hidden');
+                });
+            });
+
+            // Global page transition for links and buttons
+            const transitionDelay = 500;
+            const navigateWithFade = (url) => {
+                document.body.classList.add('fade-out');
+                setTimeout(() => {
+                    window.location.href = url;
+                }, transitionDelay);
+            };
+
+            document.querySelectorAll('a[href]').forEach(link => {
+                const href = link.getAttribute('href');
+                if (href && href !== '#' && !href.startsWith('javascript:') && !href.startsWith('mailto:') && !href.startsWith('tel:')) {
+                    link.addEventListener('click', function(event) {
+                        event.preventDefault();
+                        navigateWithFade(this.href);
+                    });
+                }
+            });
+
+            document.querySelectorAll('[data-action]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const action = btn.getAttribute('data-action');
+                    if (action === 'add-cart') {
+                        navigateWithFade('GioHang.html');
+                    }
+                    if (action === 'buy-now') {
+                        navigateWithFade('ThanhToan.html');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
